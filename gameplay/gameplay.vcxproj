@@ -513,6 +513,7 @@
     <ClInclude Include="src\VertexAttributeBinding.h" />
     <ClInclude Include="src\VertexFormat.h" />
     <ClInclude Include="src\VerticalLayout.h" />
+    <ClInclude Include="src\vulkan\VkBase.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\materials\terrain.material" />

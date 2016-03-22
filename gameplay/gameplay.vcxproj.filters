@@ -19,6 +19,9 @@
     <Filter Include="res\ui">
       <UniqueIdentifier>{eb377577-593a-469f-9361-b6950a99e431}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\vulkan">
+      <UniqueIdentifier>{70aa05c2-4423-4371-bca5-bacad3e5cbea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Plane.cpp">
@@ -1510,6 +1513,9 @@
     </ClInclude>
     <ClInclude Include="src\lua\lua_VerticalLayout.h">
       <Filter>src\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vulkan\VkBase.h">
+      <Filter>src\vulkan</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

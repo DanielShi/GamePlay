@@ -71,7 +71,7 @@
       <AdditionalIncludeDirectories>..\..\gameplay\src;..\..\external-deps\include;$(DXSDK_DIR)include;</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>
       </RuntimeTypeInfo>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
