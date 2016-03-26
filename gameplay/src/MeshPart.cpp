@@ -22,8 +22,8 @@ MeshPart* MeshPart::create(Mesh* mesh, unsigned int meshIndex, Mesh::PrimitiveTy
 {
     // Create a VBO for our index buffer.
     GLuint vbo;
-    GL_ASSERT( GPRHI_GenBuffers(1, &vbo) );
-    GL_ASSERT( GPRHI_BindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo) );
+    GPRHI_ASSERT( GPRHI_GenBuffers(1, &vbo) );
+    GPRHI_ASSERT( GPRHI_BindBuffer(GP_RHI_BUFFER_INDEX, vbo) );
 
     unsigned int indexSize = 0;
     switch (indexFormat)
@@ -43,7 +43,7 @@ MeshPart* MeshPart::create(Mesh* mesh, unsigned int meshIndex, Mesh::PrimitiveTy
         return NULL;
     }
 
-    GL_ASSERT( GPRHI_BufferData(GL_ELEMENT_ARRAY_BUFFER, indexSize * indexCount, NULL, dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW) );
+    GPRHI_ASSERT( GPRHI_BufferData(GP_RHI_BUFFER_INDEX, indexSize * indexCount, NULL, dynamic ? GP_RHI_BUFFER_DANAMIC : GP_RHI_BUFFER_STATIC) );
 
     MeshPart* part = new MeshPart();
     part->_mesh = mesh;
@@ -89,7 +89,7 @@ bool MeshPart::isDynamic() const
 
 void MeshPart::setIndexData(const void* indexData, unsigned int indexStart, unsigned int indexCount)
 {
-    GL_ASSERT( GPRHI_BindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer) );
+    GPRHI_ASSERT( GPRHI_BindBuffer(GP_RHI_BUFFER_INDEX, _indexBuffer) );
 
     unsigned int indexSize = 0;
     switch (_indexFormat)
@@ -110,7 +110,7 @@ void MeshPart::setIndexData(const void* indexData, unsigned int indexStart, unsi
 
     if (indexStart == 0 && indexCount == 0)
     {
-        GL_ASSERT( GPRHI_BufferData(GL_ELEMENT_ARRAY_BUFFER, indexSize * _indexCount, indexData, _dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW) );
+        GPRHI_ASSERT( GPRHI_BufferData(GP_RHI_BUFFER_INDEX, indexSize * _indexCount, indexData, _dynamic ? GP_RHI_BUFFER_DANAMIC : GP_RHI_BUFFER_STATIC) );
     }
     else
     {
@@ -119,7 +119,7 @@ void MeshPart::setIndexData(const void* indexData, unsigned int indexStart, unsi
             indexCount = _indexCount - indexStart;
         }
 
-        GL_ASSERT( GPRHI_BufferSubData(GL_ELEMENT_ARRAY_BUFFER, indexStart * indexSize, indexCount * indexSize, indexData) );
+        GPRHI_ASSERT( GPRHI_BufferSubData(GP_RHI_BUFFER_INDEX, indexStart * indexSize, indexCount * indexSize, indexData) );
     }
 }
 

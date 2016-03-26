@@ -35,9 +35,9 @@ Mesh::~Mesh()
 Mesh* Mesh::createMesh(const VertexFormat& vertexFormat, unsigned int vertexCount, bool dynamic)
 {
     GLuint vbo;
-    GL_ASSERT( GPRHI_GenBuffers(1, &vbo) );
-    GL_ASSERT( GPRHI_BindBuffer(GL_ARRAY_BUFFER, vbo) );
-    GL_ASSERT( GPRHI_BufferData(GL_ARRAY_BUFFER, vertexFormat.getVertexSize() * vertexCount, NULL, dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW) );
+    GPRHI_ASSERT( GPRHI_GenBuffers(1, &vbo) );
+    GPRHI_ASSERT( GPRHI_BindBuffer(GP_RHI_BUFFER_ARRAY, vbo) );
+    GPRHI_ASSERT( GPRHI_BufferData(GP_RHI_BUFFER_ARRAY, vertexFormat.getVertexSize() * vertexCount, NULL, dynamic ? GP_RHI_BUFFER_DANAMIC : GP_RHI_BUFFER_STATIC) );
 
     Mesh* mesh = new Mesh(vertexFormat);
     mesh->_vertexCount = vertexCount;
@@ -264,11 +264,11 @@ void Mesh::setPrimitiveType(PrimitiveType type)
 
 void Mesh::setVertexData(const float* vertexData, unsigned int vertexStart, unsigned int vertexCount)
 {
-    GL_ASSERT( GPRHI_BindBuffer(GL_ARRAY_BUFFER, _vertexBuffer) );
+    GPRHI_ASSERT( GPRHI_BindBuffer(GP_RHI_BUFFER_ARRAY, _vertexBuffer) );
 
     if (vertexStart == 0 && vertexCount == 0)
     {
-        GL_ASSERT( GPRHI_BufferData(GL_ARRAY_BUFFER, _vertexFormat.getVertexSize() * _vertexCount, vertexData, _dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW) );
+        GPRHI_ASSERT( GPRHI_BufferData(GP_RHI_BUFFER_ARRAY, _vertexFormat.getVertexSize() * _vertexCount, vertexData, _dynamic ? GP_RHI_BUFFER_DANAMIC : GP_RHI_BUFFER_STATIC) );
     }
     else
     {
@@ -277,7 +277,7 @@ void Mesh::setVertexData(const float* vertexData, unsigned int vertexStart, unsi
             vertexCount = _vertexCount - vertexStart;
         }
 
-        GL_ASSERT( GPRHI_BufferSubData(GL_ARRAY_BUFFER, vertexStart * _vertexFormat.getVertexSize(), vertexCount * _vertexFormat.getVertexSize(), vertexData) );
+        GPRHI_ASSERT( GPRHI_BufferSubData(GP_RHI_BUFFER_ARRAY, vertexStart * _vertexFormat.getVertexSize(), vertexCount * _vertexFormat.getVertexSize(), vertexData) );
     }
 }
 

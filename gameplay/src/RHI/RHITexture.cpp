@@ -50,3 +50,5 @@ gp_enum GPRHI_Hint(gp_enum _target, gp_enum _mode)
 	GL_ASSERT(glHint(_target, _mode));
 	return 0;
 }
+
+#include "RHIBuffer.cpp"
