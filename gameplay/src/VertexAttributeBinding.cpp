@@ -92,8 +92,8 @@ VertexAttributeBinding* VertexAttributeBinding::create(Mesh* mesh, const VertexF
 #ifdef GP_USE_VAO
     if (mesh && glGenVertexArrays)
     {
-        GL_ASSERT( glBindBuffer(GL_ARRAY_BUFFER, 0) );
-        GL_ASSERT( glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0) );
+        GL_ASSERT( GPRHI_BindBuffer(GL_ARRAY_BUFFER, 0) );
+        GL_ASSERT( GPRHI_BindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0) );
 
         // Use hardware VAOs.
         GL_ASSERT( glGenVertexArrays(1, &b->_handle) );
@@ -109,7 +109,7 @@ VertexAttributeBinding* VertexAttributeBinding::create(Mesh* mesh, const VertexF
         GL_ASSERT( glBindVertexArray(b->_handle) );
 
         // Bind the Mesh VBO so our glVertexAttribPointer calls use it.
-        GL_ASSERT( glBindBuffer(GL_ARRAY_BUFFER, mesh->getVertexBuffer()) );
+        GL_ASSERT( GPRHI_BindBuffer(GL_ARRAY_BUFFER, mesh->getVertexBuffer()) );
     }
     else
 #endif
@@ -247,11 +247,11 @@ void VertexAttributeBinding::bind()
         // Software mode
         if (_mesh)
         {
-            GL_ASSERT( glBindBuffer(GL_ARRAY_BUFFER, _mesh->getVertexBuffer()) );
+            GL_ASSERT( GPRHI_BindBuffer(GL_ARRAY_BUFFER, _mesh->getVertexBuffer()) );
         }
         else
         {
-            GL_ASSERT( glBindBuffer(GL_ARRAY_BUFFER, 0) );
+            GL_ASSERT( GPRHI_BindBuffer(GL_ARRAY_BUFFER, 0) );
         }
 
         GP_ASSERT(_attributes);
@@ -279,7 +279,7 @@ void VertexAttributeBinding::unbind()
         // Software mode
         if (_mesh)
         {
-            GL_ASSERT( glBindBuffer(GL_ARRAY_BUFFER, 0) );
+            GL_ASSERT( GPRHI_BindBuffer(GL_ARRAY_BUFFER, 0) );
         }
 
         GP_ASSERT(_attributes);

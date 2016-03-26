@@ -1609,6 +1609,9 @@
     <None Include="res\ui\default.theme">
       <Filter>res\ui</Filter>
     </None>
+    <None Include="src\RHI\RHIBuffer.cpp">
+      <Filter>src\RHI</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\PhysicsFixedConstraint.inl">

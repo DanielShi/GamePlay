@@ -248,7 +248,7 @@ void MeshBatch::draw()
 
     // Not using VBOs, so unbind the element array buffer.
     // ARRAY_BUFFER will be unbound automatically during pass->bind().
-    GL_ASSERT( glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0 ) );
+    GL_ASSERT( GPRHI_BindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0 ) );
 
     GP_ASSERT(_material);
     if (_indexed)

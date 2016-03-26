@@ -547,6 +547,7 @@
     <None Include="src\Plane.inl" />
     <None Include="src\Quaternion.inl" />
     <None Include="src\Ray.inl" />
+    <None Include="src\RHI\RHIBuffer.cpp" />
     <None Include="src\ScriptController.inl" />
     <None Include="src\Vector2.inl" />
     <None Include="src\Vector3.inl" />

@@ -1,7 +1,5 @@
 #include "../Base.h"
 
-#error what the fuck 
-
 gp_enum GPRHI_GenBuffers(gp_sizei _n, gp_uint* _buffers)
 {
 	GL_ASSERT(glGenBuffers(_n, _buffers));
@@ -27,4 +25,6 @@ gp_enum GPRHI_BufferSubData(gp_enum _target, gp_intptr _offset, gp_sizeiptr _siz
 	GL_ASSERT(glBufferSubData(_target, _offset, _size, _data));
 	return 0;
 }
+
+
 

@@ -7,6 +7,8 @@ typedef int				gp_int;
 typedef unsigned int	gp_uint;
 typedef int				gp_enum;
 typedef void			gp_void;
+typedef ptrdiff_t		gp_sizeiptr;
+typedef ptrdiff_t		gp_intptr;
 
 #define GP_TRUE			(1)
 #define GP_FALSE		(0)
@@ -100,7 +102,13 @@ enum GP_RHI_HINT_MODE {
 
 
 #define GPRHI_ASSERT(a) a 
-
+//Buffers
+gp_enum GPRHI_GenBuffers(gp_sizei _n, gp_uint* _buffers);
+gp_enum GPRHI_DeleteBuffers(gp_sizei _n, const gp_uint* _buffers);
+gp_enum GPRHI_BindBuffer(gp_enum _target, gp_uint _buffer);
+gp_enum GPRHI_BufferData(gp_enum _target, gp_sizeiptr _size, const gp_void* _data, gp_enum _usage);
+gp_enum GPRHI_BufferSubData(gp_enum _target, gp_intptr _offset, gp_sizeiptr _size, const gp_void* _data);
+//Textures
 gp_enum GPRHI_DeleteTextures(gp_int _n, gp_uint* _textures);
 gp_enum GPRHI_GenTextures(gp_int _n, gp_uint* _textures);
 gp_enum GPRHI_BindTexture(gp_enum _target, gp_uint _texture);
@@ -111,4 +119,5 @@ gp_enum GPRHI_TexSubImage2D (gp_enum _target, gp_int _level, gp_int _xoffset, gp
 gp_enum GPRHI_CompressedTexImage2D(gp_enum _target, gp_int _level, gp_enum _internalformat, gp_sizei _width, gp_sizei _height, gp_int _border, gp_sizei _imageSize, const gp_void* _data);
 gp_enum GPRHI_GenerateMipmap(gp_enum _target);
 gp_enum GPRHI_Hint(gp_enum _target, gp_enum _mode);
+
 #endif

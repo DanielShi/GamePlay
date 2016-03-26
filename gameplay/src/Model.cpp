@@ -344,7 +344,7 @@ unsigned int Model::draw(bool wireframe)
                 Pass* pass = technique->getPassByIndex(i);
                 GP_ASSERT(pass);
                 pass->bind();
-                GL_ASSERT( glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0) );
+                GL_ASSERT( GPRHI_BindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0) );
                 if (!wireframe || !drawWireframe(_mesh))
                 {
                     GL_ASSERT( glDrawArrays(_mesh->getPrimitiveType(), 0, _mesh->getVertexCount()) );
@@ -372,7 +372,7 @@ unsigned int Model::draw(bool wireframe)
                     Pass* pass = technique->getPassByIndex(j);
                     GP_ASSERT(pass);
                     pass->bind();
-                    GL_ASSERT( glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, part->_indexBuffer) );
+                    GL_ASSERT( GPRHI_BindBuffer(GL_ELEMENT_ARRAY_BUFFER, part->_indexBuffer) );
                     if (!wireframe || !drawWireframe(part))
                     {
                         GL_ASSERT( glDrawElements(part->getPrimitiveType(), part->getIndexCount(), part->getIndexFormat(), 0) );
