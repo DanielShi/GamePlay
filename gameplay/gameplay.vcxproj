@@ -238,6 +238,9 @@
     <ClCompile Include="src\RenderState.cpp" />
     <ClCompile Include="src\RenderTarget.cpp" />
     <ClCompile Include="src\RHI\RHITexture.cpp" />
+    <ClCompile Include="src\RHI\RHIBuffer.cpp" />
+    <ClCompile Include="src\RHI\RHIOp.cpp" />
+    <ClCompile Include="src\RHI\RHIShader.cpp" />   
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\SceneLoader.cpp" />
     <ClCompile Include="src\ScreenDisplayer.cpp" />
@@ -547,9 +550,6 @@
     <None Include="src\Plane.inl" />
     <None Include="src\Quaternion.inl" />
     <None Include="src\Ray.inl" />
-    <None Include="src\RHI\RHIBuffer.cpp" />
-    <None Include="src\RHI\RHIOp.cpp" />
-    <None Include="src\RHI\RHIShader.cpp" />
     <None Include="src\ScriptController.inl" />
     <None Include="src\Vector2.inl" />
     <None Include="src\Vector3.inl" />

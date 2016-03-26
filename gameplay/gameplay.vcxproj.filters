@@ -771,6 +771,15 @@
     <ClCompile Include="src\RHI\RHITexture.cpp">
       <Filter>src\RHI</Filter>
     </ClCompile>
+    <ClCompile Include="src\RHI\RHIBuffer.cpp">
+      <Filter>src\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\RHIOp.cpp">
+      <Filter>src\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\RHIShader.cpp">
+      <Filter>src\RHI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Plane.h">
@@ -1608,15 +1617,6 @@
     </None>
     <None Include="res\ui\default.theme">
       <Filter>res\ui</Filter>
-    </None>
-    <None Include="src\RHI\RHIBuffer.cpp">
-      <Filter>src\RHI</Filter>
-    </None>
-    <None Include="src\RHI\RHIShader.cpp">
-      <Filter>src\RHI</Filter>
-    </None>
-    <None Include="src\RHI\RHIOp.cpp">
-      <Filter>src\RHI</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
