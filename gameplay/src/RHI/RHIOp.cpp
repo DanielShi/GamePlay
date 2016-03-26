@@ -1,51 +1,37 @@
 #include "../Base.h"
-gp_enum GPRHI_Enable(gp_enum _cap)
+
+gp_enum GPRHI_Viewport(gp_int _x, gp_int _y, gp_sizei _width, gp_sizei _height)
 {
-	GL_ASSERT(glEnable(_cap));
+	GL_ASSERT(glViewport(_x, _y, _width, _height));
 	return 0;
 }
-gp_enum GPRHI_Disable(gp_enum _cap)
+gp_enum GPRHI_ClearColor(gp_clampf _red, gp_clampf _green, gp_clampf _blue, gp_clampf _alpha)
 {
-	GL_ASSERT(glDisable(_cap));
+	GL_ASSERT(glClearColor(_red, _green, _blue, _alpha));
 	return 0;
 }
-gp_enum GPRHI_BlendFunc(gp_enum _sfactor, gp_enum _dfactor)
+gp_enum GPRHI_ClearDepth(gp_clampd _depth)
 {
-	GL_ASSERT(glBlendFunc(_sfactor, _dfactor));
+	GL_ASSERT(glClearDepth(_depth));
 	return 0;
 }
-gp_enum GPRHI_CullFace(gp_enum _mode)
+gp_enum GPRHI_ClearStencil(gp_int _s)
 {
-	GL_ASSERT(glCullFace(_mode));
+	GL_ASSERT(glClearStencil(_s));
 	return 0;
 }
-gp_enum GPRHI_FrontFace(gp_enum _mode)
+gp_enum GPRHI_Clear(gp_bitfield _mask)
 {
-	GL_ASSERT(glFrontFace(_mode));
+	GL_ASSERT(glClear(_mask));
 	return 0;
 }
-gp_enum GPRHI_DepthMask(gp_boolean _flag)
+gp_enum GPRHI_DrawElements(gp_enum _mode, gp_sizei _count, gp_enum _type, const gp_void *_indices)
 {
-	GL_ASSERT(glDepthMask(_flag));
+	GL_ASSERT(glDrawElements(_mode, _count, _type, _indices));
 	return 0;
 }
-gp_enum GPRHI_DepthFunc(gp_enum _func)
+gp_enum GPRHI_DrawArrays(gp_enum _mode, gp_int _first, gp_sizei _count)
 {
-	GL_ASSERT(glDepthFunc(_func));
-	return 0;
-}
-gp_enum GPRHI_StencilMask(gp_uint _mask)
-{
-	GL_ASSERT(glStencilMask(_mask));
-	return 0;
-}
-gp_enum GPRHI_StencilFunc(gp_enum _func, gp_int _ref, gp_uint _mask)
-{
-	GL_ASSERT(glStencilFunc(_func, _ref, _mask));
-	return 0;
-}
-gp_enum GPRHI_StencilOp(gp_enum _fail, gp_enum _zfail, gp_enum _zpass)
-{
-	GL_ASSERT(glStencilOp(_fail, _zfail, _zpass));
+	GL_ASSERT(glDrawArrays(_mode, _first, _count));
 	return 0;
 }

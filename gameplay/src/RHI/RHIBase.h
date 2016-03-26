@@ -12,6 +12,9 @@ typedef ptrdiff_t		gp_intptr;
 typedef bool			gp_boolean;
 typedef char			gp_char;
 typedef float			gp_float;
+typedef float			gp_clampf;
+typedef double			gp_clampd;
+typedef unsigned int	gp_bitfield;
 
 #define GP_TRUE			(1)
 #define GP_FALSE		(0)
@@ -87,6 +90,7 @@ enum GP_RHI_TOPOLOGY {
 	GP_RHI_TOPOLOGY_TRIANGLE_STRIP						= GL_TRIANGLE_STRIP,
 	GP_RHI_TOPOLOGY_LINES								= GL_LINES,
 	GP_RHI_TOPOLOGY_LINE_STRIP							= GL_LINE_STRIP,
+	GP_RHI_TOPOLOGY_LINE_LOOP							= GL_LINE_LOOP,
 	GP_RHI_TOPOLOGY_POINTS								= GL_POINTS,
 };
 
@@ -321,7 +325,14 @@ gp_enum GPRHI_DepthFunc(gp_enum _func);
 gp_enum GPRHI_StencilMask(gp_uint _mask);
 gp_enum GPRHI_StencilFunc(gp_enum _func, gp_int _ref, gp_uint _mask);
 gp_enum GPRHI_StencilOp(gp_enum _fail, gp_enum _zfail, gp_enum _zpass);
-
+//Render Command
+gp_enum GPRHI_Viewport(gp_int _x, gp_int _y, gp_sizei _width, gp_sizei _height);
+gp_enum GPRHI_ClearColor(gp_clampf _red, gp_clampf _green, gp_clampf _blue, gp_clampf _alpha);
+gp_enum GPRHI_ClearDepth(gp_clampd _depth);
+gp_enum GPRHI_ClearStencil(gp_int _s);
+gp_enum GPRHI_Clear(gp_bitfield _mask);
+gp_enum GPRHI_DrawElements(gp_enum _mode, gp_sizei _count, gp_enum _type, const gp_void *_indices);
+gp_enum GPRHI_DrawArrays(gp_enum _mode, gp_int _first, gp_sizei _count);
 
 
 #endif

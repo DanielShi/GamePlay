@@ -248,7 +248,7 @@ void MeshBatch::draw()
 
     // Not using VBOs, so unbind the element array buffer.
     // ARRAY_BUFFER will be unbound automatically during pass->bind().
-    GL_ASSERT( GPRHI_BindBuffer(GP_RHI_BUFFER_INDEX, 0 ) );
+    GPRHI_ASSERT( GPRHI_BindBuffer(GP_RHI_BUFFER_INDEX, 0 ) );
 
     GP_ASSERT(_material);
     if (_indexed)
@@ -266,11 +266,11 @@ void MeshBatch::draw()
 
         if (_indexed)
         {
-            GL_ASSERT( glDrawElements(_primitiveType, _indexCount, GL_UNSIGNED_SHORT, (GLvoid*)_indices) );
+            GPRHI_ASSERT( GPRHI_DrawElements(_primitiveType, _indexCount, GP_RHI_FORMAT_UNSIGNED_SHORT, (GLvoid*)_indices) );
         }
         else
         {
-            GL_ASSERT( glDrawArrays(_primitiveType, 0, _vertexCount) );
+            GPRHI_ASSERT( GPRHI_DrawArrays(_primitiveType, 0, _vertexCount) );
         }
 
         pass->unbind();
