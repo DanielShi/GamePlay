@@ -191,6 +191,47 @@ enum GP_RHI_TEXTURE_SLOT {
 	GP_RHI_TEXTURE_SLOT_30								= GL_TEXTURE30,
 	GP_RHI_TEXTURE_SLOT_31								= GL_TEXTURE31,
 };
+
+
+enum GP_RHI_RENDER_STATE {
+	GP_RHI_RS_BLEND										= GL_BLEND,
+	GP_RHI_RS_CULL_FACE									= GL_CULL_FACE,
+	GP_RHI_RS_DEPTH_TEST								= GL_DEPTH_TEST,
+	GP_RHI_RS_STENCIL_TEST								= GL_STENCIL_TEST,
+};
+
+enum GP_RHI_BLEND_FUNC {
+	GP_RHI_BLEND_ONE									= GL_ONE,
+	GP_RHI_BLEND_ZERO									= GL_ZERO,
+	GP_RHI_BLEND_SRC_COLOR								= GL_SRC_COLOR,
+	GP_RHI_BLEND_ONE_MINUS_SRC_COLOR					= GL_ONE_MINUS_SRC_COLOR,
+	GP_RHI_BLEND_SRC_ALPHA								= GL_SRC_ALPHA,                      
+	GP_RHI_BLEND_ONE_MINUS_SRC_ALPHA					= GL_ONE_MINUS_SRC_ALPHA,
+	GP_RHI_BLEND_DST_ALPHA								= GL_DST_ALPHA,            
+	GP_RHI_BLEND_ONE_MINUS_DST_ALPHA					= GL_ONE_MINUS_DST_ALPHA,
+};
+
+enum GP_RHI_CULL_FACE {
+	GP_RHI_CULL_FACE_BACK								= GL_BACK,
+	GP_RHI_CULL_FACE_FRONT								= GL_FRONT,
+};
+
+enum GP_RHI_FRONT_FACE {
+	GP_RHI_FRONT_FACE_CCW								= GL_CCW,
+	GP_RHI_FRONT_FACE_CW								= GL_CW,
+};
+
+enum GP_RHI_DEPTH_FUNC {
+	GP_RHI_DEPTH_FUNC_NEVER								= GL_NEVER,
+	GP_RHI_DEPTH_FUNC_LESS 								= GL_LESS,
+	GP_RHI_DEPTH_FUNC_EQUAL 							= GL_EQUAL,
+	GP_RHI_DEPTH_FUNC_LEQUAL 							= GL_LEQUAL,                        
+	GP_RHI_DEPTH_FUNC_GREATER 							= GL_GREATER,                       
+	GP_RHI_DEPTH_FUNC_NOTEQUAL 							= GL_NOTEQUAL,                      
+	GP_RHI_DEPTH_FUNC_GEQUAL 							= GL_GEQUAL,                        
+	GP_RHI_DEPTH_FUNC_ALWAYS 							= GL_ALWAYS,                        
+};
+
 #else
 #error not implemented
 #endif
@@ -269,5 +310,18 @@ gp_enum GPRHI_GetActiveAttrib(gp_uint _program, gp_uint _index, gp_sizei _maxLen
 gp_int  GPRHI_GetAttribLocation(gp_uint _program, const gp_char* _name);
 gp_enum GPRHI_GetActiveUniform(gp_uint _program, gp_uint _index, gp_sizei _maxLength, gp_sizei* _length, gp_int* _size, gp_enum* _type, gp_char* _name);
 gp_int  GPRHI_GetUniformLocation(gp_uint _program, const gp_char* _name);
+//Render State
+gp_enum GPRHI_Enable(gp_enum _cap);
+gp_enum GPRHI_Disable(gp_enum _cap);
+gp_enum GPRHI_BlendFunc(gp_enum _sfactor, gp_enum _dfactor);
+gp_enum GPRHI_CullFace(gp_enum _mode);
+gp_enum GPRHI_FrontFace(gp_enum _mode);
+gp_enum GPRHI_DepthMask(gp_boolean _flag);
+gp_enum GPRHI_DepthFunc(gp_enum _func);
+gp_enum GPRHI_StencilMask(gp_uint _mask);
+gp_enum GPRHI_StencilFunc(gp_enum _func, gp_int _ref, gp_uint _mask);
+gp_enum GPRHI_StencilOp(gp_enum _fail, gp_enum _zfail, gp_enum _zpass);
+
+
 
 #endif

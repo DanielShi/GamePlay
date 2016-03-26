@@ -240,7 +240,8 @@
     <ClCompile Include="src\RHI\RHITexture.cpp" />
     <ClCompile Include="src\RHI\RHIBuffer.cpp" />
     <ClCompile Include="src\RHI\RHIOp.cpp" />
-    <ClCompile Include="src\RHI\RHIShader.cpp" />   
+    <ClCompile Include="src\RHI\RHIShader.cpp" />
+    <ClCompile Include="src\RHI\RHIRenderState.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\SceneLoader.cpp" />
     <ClCompile Include="src\ScreenDisplayer.cpp" />

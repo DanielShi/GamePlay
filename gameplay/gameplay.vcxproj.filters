@@ -780,6 +780,9 @@
     <ClCompile Include="src\RHI\RHIShader.cpp">
       <Filter>src\RHI</Filter>
     </ClCompile>
+    <ClCompile Include="src\RHI\RHIRenderState.cpp">
+      <Filter>src\RHI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Plane.h">
