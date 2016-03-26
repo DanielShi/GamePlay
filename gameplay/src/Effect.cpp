@@ -232,13 +232,13 @@ Effect* Effect::createFromSource(const char* vshPath, const char* vshSource, con
     GP_ASSERT(fshSource);
 
     const unsigned int SHADER_SOURCE_LENGTH = 3;
-    const GLchar* shaderSource[SHADER_SOURCE_LENGTH];
+    const gp_char* shaderSource[SHADER_SOURCE_LENGTH];
     char* infoLog = NULL;
-    GLuint vertexShader;
-    GLuint fragmentShader;
-    GLuint program;
-    GLint length;
-    GLint success;
+    gp_uint vertexShader;
+    gp_uint fragmentShader;
+    gp_uint program;
+    gp_int length;
+    gp_int success;
 
     // Replace all comma separated definitions with #define prefix and \n suffix
     std::string definesStr = "";
@@ -373,7 +373,7 @@ Effect* Effect::createFromSource(const char* vshPath, const char* vshSource, con
     // GPRHI_BindAttribLocation, some vendors actually reserve certain attribute indices
     // and therefore using this function can create compatibility issues between
     // different hardware vendors.
-    GLint activeAttributes;
+    gp_int activeAttributes;
     GPRHI_ASSERT( GPRHI_GetProgramiv(program, GP_RHI_SHADER_GET_ACTIVE_ATTRIBUTES, &activeAttributes) );
     if (activeAttributes > 0)
     {
@@ -401,7 +401,7 @@ Effect* Effect::createFromSource(const char* vshPath, const char* vshSource, con
     }
 
     // Query and store uniforms from the program.
-    GLint activeUniforms;
+    gp_int activeUniforms;
     GPRHI_ASSERT( GPRHI_GetProgramiv(program, GP_RHI_SHADER_GET_ACTIVE_UNIFORMS, &activeUniforms) );
     if (activeUniforms > 0)
     {
@@ -478,7 +478,7 @@ Uniform* Effect::getUniform(const char* name) const
 		return itr->second;
 	}
 
-    GLint uniformLocation;
+    gp_int uniformLocation;
     GPRHI_ASSERT( uniformLocation = GPRHI_GetUniformLocation(_program, name) );
     if (uniformLocation > -1)
 	{
@@ -563,7 +563,7 @@ void Effect::setValue(Uniform* uniform, const Matrix* values, unsigned int count
 {
     GP_ASSERT(uniform);
     GP_ASSERT(values);
-    GPRHI_ASSERT( GPRHI_UniformMatrix4fv(uniform->_location, count, GP_FALSE, (GLfloat*)values) );
+    GPRHI_ASSERT( GPRHI_UniformMatrix4fv(uniform->_location, count, GP_FALSE, (gp_float*)values) );
 }
 
 void Effect::setValue(Uniform* uniform, const Vector2& value)
@@ -576,7 +576,7 @@ void Effect::setValue(Uniform* uniform, const Vector2* values, unsigned int coun
 {
     GP_ASSERT(uniform);
     GP_ASSERT(values);
-    GPRHI_ASSERT( GPRHI_Uniform2fv(uniform->_location, count, (GLfloat*)values) );
+    GPRHI_ASSERT( GPRHI_Uniform2fv(uniform->_location, count, (gp_float*)values) );
 }
 
 void Effect::setValue(Uniform* uniform, const Vector3& value)
@@ -589,7 +589,7 @@ void Effect::setValue(Uniform* uniform, const Vector3* values, unsigned int coun
 {
     GP_ASSERT(uniform);
     GP_ASSERT(values);
-    GPRHI_ASSERT( GPRHI_Uniform3fv(uniform->_location, count, (GLfloat*)values) );
+    GPRHI_ASSERT( GPRHI_Uniform3fv(uniform->_location, count, (gp_float*)values) );
 }
 
 void Effect::setValue(Uniform* uniform, const Vector4& value)
@@ -602,7 +602,7 @@ void Effect::setValue(Uniform* uniform, const Vector4* values, unsigned int coun
 {
     GP_ASSERT(uniform);
     GP_ASSERT(values);
-    GPRHI_ASSERT( GPRHI_Uniform4fv(uniform->_location, count, (GLfloat*)values) );
+    GPRHI_ASSERT( GPRHI_Uniform4fv(uniform->_location, count, (gp_float*)values) );
 }
 
 void Effect::setValue(Uniform* uniform, const Texture::Sampler* sampler)
@@ -628,7 +628,7 @@ void Effect::setValue(Uniform* uniform, const Texture::Sampler** values, unsigne
     GP_ASSERT(values);
 
     // Set samplers as active and load texture unit array
-    GLint units[32];
+    gp_int units[32];
     for (unsigned int i = 0; i < count; ++i)
     {
         GP_ASSERT((const_cast<Texture::Sampler*>(values[i])->getTexture()->getType() == Texture::TEXTURE_2D && uniform->_type == GP_RHI_UNIFORM_SAMPLER_2D) || 
@@ -677,7 +677,7 @@ const char* Uniform::getName() const
     return _name.c_str();
 }
 
-const GLenum Uniform::getType() const
+const gp_enum Uniform::getType() const
 {
     return _type;
 }

@@ -266,7 +266,7 @@ void MeshBatch::draw()
 
         if (_indexed)
         {
-            GPRHI_ASSERT( GPRHI_DrawElements(_primitiveType, _indexCount, GP_RHI_FORMAT_UNSIGNED_SHORT, (GLvoid*)_indices) );
+            GPRHI_ASSERT( GPRHI_DrawElements(_primitiveType, _indexCount, GP_RHI_FORMAT_UNSIGNED_SHORT, (gp_void*)_indices) );
         }
         else
         {

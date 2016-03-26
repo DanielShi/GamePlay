@@ -50,8 +50,8 @@ void FrameBuffer::initialize()
 {
     // Query the current/initial FBO handle and store is as out 'default' frame buffer.
     // On many platforms this will simply be the zero (0) handle, but this is not always the case.
-    GLint fbo;
-    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &fbo);
+    gp_int fbo;
+    GPRHI_GetIntegerv(GP_RHI_GET_FRAMEBUFFER_BINDING, &fbo);
     _defaultFrameBuffer = new FrameBuffer(FRAMEBUFFER_ID_DEFAULT, 0, 0, (FrameBufferHandle)fbo);
     _currentFrameBuffer = _defaultFrameBuffer;
 
@@ -59,7 +59,7 @@ void FrameBuffer::initialize()
     // on GL ES 2.x, so if the define does not exist, assume a value of 1.
 #ifdef GL_MAX_COLOR_ATTACHMENTS
         GLint val;
-        GPRHI_ASSERT( glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &val) );
+        GPRHI_ASSERT( GPRHI_GetIntegerv(GP_RHI_MAX_COLOR_ATTACHMENTS, &val) );
         _maxRenderTargets = (unsigned int)std::max(1, val);
 #else
         _maxRenderTargets = 1;
@@ -91,7 +91,7 @@ FrameBuffer* FrameBuffer::create(const char* id, unsigned int width, unsigned in
     }
 
     // Create the frame buffer
-    GLuint handle = 0;
+    gp_uint handle = 0;
     GPRHI_ASSERT( GPRHI_GenFramebuffers(1, &handle) );
     FrameBuffer* frameBuffer = new FrameBuffer(id, width, height, handle);
     
@@ -172,7 +172,7 @@ void FrameBuffer::setRenderTarget(RenderTarget* target, Texture::CubeFace face, 
     setRenderTarget(target, index, GP_RHI_TEXTURE_TARGET_CUBE_MAP_POSITIVE_X + face);
 }
 
-void FrameBuffer::setRenderTarget(RenderTarget* target, unsigned int index, GLenum textureTarget)
+void FrameBuffer::setRenderTarget(RenderTarget* target, unsigned int index, gp_enum textureTarget)
 {
     GP_ASSERT(index < _maxRenderTargets);
     GP_ASSERT(_renderTargets);
@@ -195,7 +195,7 @@ void FrameBuffer::setRenderTarget(RenderTarget* target, unsigned int index, GLen
 
         // Now set this target as the color attachment corresponding to index.
         GPRHI_ASSERT( GPRHI_BindFramebuffer(GP_RHI_BUFFER_FRAME_BUFFER, _handle) );
-        GLenum attachment;
+        gp_enum attachment;
         if (target->getTexture()->getFormat() == Texture::DEPTH)
         {
             attachment = GP_RHI_BUFFER_ATTACHMENT_DEPTH;
@@ -213,7 +213,7 @@ void FrameBuffer::setRenderTarget(RenderTarget* target, unsigned int index, GLen
             GPRHI_ASSERT( GPRHI_FramebufferTexture2D(GP_RHI_BUFFER_FRAME_BUFFER, attachment, textureTarget, _renderTargets[index]->getTexture()->getHandle(), 0) );
         }
 
-        GLenum fboStatus = GPRHI_CheckFramebufferStatus(GP_RHI_BUFFER_FRAME_BUFFER);
+        gp_enum fboStatus = GPRHI_CheckFramebufferStatus(GP_RHI_BUFFER_FRAME_BUFFER);
         if (fboStatus != GP_RHI_FRAMEBUFFER_COMPLETE)
         {
             GP_ERROR("Framebuffer status incomplete: 0x%x", fboStatus);
@@ -269,7 +269,7 @@ void FrameBuffer::setDepthStencilTarget(DepthStencilTarget* target)
         }
 
         // Check the framebuffer is good to go.
-        GLenum fboStatus = GPRHI_CheckFramebufferStatus(GP_RHI_BUFFER_FRAME_BUFFER);
+        gp_enum fboStatus = GPRHI_CheckFramebufferStatus(GP_RHI_BUFFER_FRAME_BUFFER);
         if (fboStatus != GP_RHI_FRAMEBUFFER_COMPLETE)
         {
             GP_ERROR("Framebuffer status incomplete: 0x%x", fboStatus);
@@ -290,7 +290,7 @@ bool FrameBuffer::isDefault() const
     return (this == _defaultFrameBuffer);
 }
 
-FrameBuffer* FrameBuffer::bind(GLenum type)
+FrameBuffer* FrameBuffer::bind(gp_enum type)
 {
     GPRHI_ASSERT( GPRHI_BindFramebuffer(type, _handle) );
     FrameBuffer* previousFrameBuffer = _currentFrameBuffer;
@@ -306,7 +306,7 @@ void FrameBuffer::getScreenshot(Image* image)
     unsigned int height = _currentFrameBuffer->getHeight();
 
 	if (image->getWidth() == width && image->getHeight() == height) {
-		GLenum format = image->getFormat() == Image::RGB ? GP_RHI_FORMAT_RGB : GP_RHI_FORMAT_RGBA;
+		gp_enum format = image->getFormat() == Image::RGB ? GP_RHI_FORMAT_RGB : GP_RHI_FORMAT_RGBA;
         GPRHI_ASSERT( GPRHI_ReadPixels(0, 0, width, height, format, GP_RHI_FORMAT_UNSIGNED_BYTE, image->getData()) );
 	}
 }
@@ -319,7 +319,7 @@ Image* FrameBuffer::createScreenshot(Image::Format format)
     return screenshot;
 }
 
-FrameBuffer* FrameBuffer::bindDefault(GLenum type)
+FrameBuffer* FrameBuffer::bindDefault(gp_enum type)
 {
     GPRHI_ASSERT( GPRHI_BindFramebuffer(type, _defaultFrameBuffer->_handle) );
     _currentFrameBuffer = _defaultFrameBuffer;

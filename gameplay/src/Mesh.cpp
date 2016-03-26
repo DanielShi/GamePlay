@@ -34,7 +34,7 @@ Mesh::~Mesh()
 
 Mesh* Mesh::createMesh(const VertexFormat& vertexFormat, unsigned int vertexCount, bool dynamic)
 {
-    GLuint vbo;
+    gp_uint vbo;
     GPRHI_ASSERT( GPRHI_GenBuffers(1, &vbo) );
     GPRHI_ASSERT( GPRHI_BindBuffer(GP_RHI_BUFFER_ARRAY, vbo) );
     GPRHI_ASSERT( GPRHI_BufferData(GP_RHI_BUFFER_ARRAY, vertexFormat.getVertexSize() * vertexCount, NULL, dynamic ? GP_RHI_BUFFER_DANAMIC : GP_RHI_BUFFER_STATIC) );

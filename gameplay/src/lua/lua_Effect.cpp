@@ -347,7 +347,7 @@ int lua_Effect_getVertexAttribute(lua_State* state)
                 const char* param1 = gameplay::ScriptUtil::getString(2, false);
 
                 Effect* instance = getInstance(state);
-                void* returnPtr = (void*)new GLint(instance->getVertexAttribute(param1));
+                void* returnPtr = (void*)new gp_int(instance->getVertexAttribute(param1));
                 if (returnPtr)
                 {
                     gameplay::ScriptUtil::LuaObject* object = (gameplay::ScriptUtil::LuaObject*)lua_newuserdata(state, sizeof(gameplay::ScriptUtil::LuaObject));

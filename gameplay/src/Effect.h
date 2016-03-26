@@ -241,7 +241,7 @@ private:
 
     static Effect* createFromSource(const char* vshPath, const char* vshSource, const char* fshPath, const char* fshSource, const char* defines = NULL);
 
-    GLuint _program;
+    gp_uint _program;
     std::string _id;
     std::map<std::string, VertexAttribute> _vertexAttributes;
     mutable std::map<std::string, Uniform*> _uniforms;
@@ -269,7 +269,7 @@ public:
      * 
      * @return The OpenGL uniform type.
      */
-    const GLenum getType() const;
+    const gp_enum getType() const;
 
     /**
      * Returns the effect for this uniform.
@@ -301,8 +301,8 @@ private:
     Uniform& operator=(const Uniform&);
 
     std::string _name;
-    GLint _location;
-    GLenum _type;
+    gp_int _location;
+    gp_enum _type;
     unsigned int _index;
     Effect* _effect;
 };

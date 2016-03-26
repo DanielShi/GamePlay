@@ -678,7 +678,7 @@ void RenderState::StateBlock::restore(long stateOverrideBits)
     }
     if (!(stateOverrideBits & RS_DEPTH_FUNC) && (_defaultState->_bits & RS_DEPTH_FUNC))
     {
-        GPRHI_ASSERT( GPRHI_DepthFunc((GLenum)GP_RHI_DEPTH_FUNC_LESS) );
+        GPRHI_ASSERT( GPRHI_DepthFunc((GLenum)GP_RHI_COMPARE_FUNC_LESS) );
         _defaultState->_bits &= ~RS_DEPTH_FUNC;
         _defaultState->_depthFunction = RenderState::DEPTH_LESS;
     }

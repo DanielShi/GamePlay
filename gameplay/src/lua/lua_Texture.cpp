@@ -198,7 +198,7 @@ int lua_Texture_getHandle(lua_State* state)
             if ((lua_type(state, 1) == LUA_TUSERDATA))
             {
                 Texture* instance = getInstance(state);
-                void* returnPtr = (void*)new GLuint(instance->getHandle());
+                void* returnPtr = (void*)new gp_uint(instance->getHandle());
                 if (returnPtr)
                 {
                     gameplay::ScriptUtil::LuaObject* object = (gameplay::ScriptUtil::LuaObject*)lua_newuserdata(state, sizeof(gameplay::ScriptUtil::LuaObject));
@@ -686,7 +686,7 @@ int lua_Texture_static_create(lua_State* state)
                 {
                     // Get parameter 1 off the stack.
                     bool param1Valid;
-                    gameplay::ScriptUtil::LuaArray<GLuint> param1 = gameplay::ScriptUtil::getObjectPointer<GLuint>(1, "GLuint", true, &param1Valid);
+                    gameplay::ScriptUtil::LuaArray<gp_uint> param1 = gameplay::ScriptUtil::getObjectPointer<gp_uint>(1, "GLuint", true, &param1Valid);
                     if (!param1Valid)
                         break;
 
@@ -766,7 +766,7 @@ int lua_Texture_static_create(lua_State* state)
                 {
                     // Get parameter 1 off the stack.
                     bool param1Valid;
-                    gameplay::ScriptUtil::LuaArray<GLuint> param1 = gameplay::ScriptUtil::getObjectPointer<GLuint>(1, "GLuint", true, &param1Valid);
+                    gameplay::ScriptUtil::LuaArray<gp_uint> param1 = gameplay::ScriptUtil::getObjectPointer<gp_uint>(1, "GLuint", true, &param1Valid);
                     if (!param1Valid)
                         break;
 

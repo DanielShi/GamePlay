@@ -517,7 +517,7 @@ int lua_Mesh_getVertexBuffer(lua_State* state)
             if ((lua_type(state, 1) == LUA_TUSERDATA))
             {
                 Mesh* instance = getInstance(state);
-                void* returnPtr = (void*)new GLuint(instance->getVertexBuffer());
+                void* returnPtr = (void*)new gp_uint(instance->getVertexBuffer());
                 if (returnPtr)
                 {
                     gameplay::ScriptUtil::LuaObject* object = (gameplay::ScriptUtil::LuaObject*)lua_newuserdata(state, sizeof(gameplay::ScriptUtil::LuaObject));

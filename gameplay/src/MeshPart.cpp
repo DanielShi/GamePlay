@@ -21,7 +21,7 @@ MeshPart* MeshPart::create(Mesh* mesh, unsigned int meshIndex, Mesh::PrimitiveTy
     Mesh::IndexFormat indexFormat, unsigned int indexCount, bool dynamic)
 {
     // Create a VBO for our index buffer.
-    GLuint vbo;
+    gp_uint vbo;
     GPRHI_ASSERT( GPRHI_GenBuffers(1, &vbo) );
     GPRHI_ASSERT( GPRHI_BindBuffer(GP_RHI_BUFFER_INDEX, vbo) );
 

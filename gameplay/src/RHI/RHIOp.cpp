@@ -35,3 +35,14 @@ gp_enum GPRHI_DrawArrays(gp_enum _mode, gp_int _first, gp_sizei _count)
 	GL_ASSERT(glDrawArrays(_mode, _first, _count));
 	return 0;
 }
+gp_enum GPRHI_GetIntegerv(gp_enum _cap, gp_int* _value)
+{
+	GL_ASSERT(glGetIntegerv(_cap, _value));
+	return 0;
+}
+gp_enum GPRHI_GetError()
+{
+	return glGetError();
+}
+
+

@@ -10,7 +10,7 @@
 #include "Form.h"
 
 /** @script{ignore} */
-GLenum __gl_error_code = GL_NO_ERROR;
+gp_enum __gl_error_code = GP_NO_ERROR;
 /** @script{ignore} */
 ALenum __al_error_code = AL_NO_ERROR;
 
@@ -481,12 +481,12 @@ void Game::updateOnce()
 void Game::setViewport(const Rectangle& viewport)
 {
     _viewport = viewport;
-    GPRHI_Viewport((GLuint)viewport.x, (GLuint)viewport.y, (GLuint)viewport.width, (GLuint)viewport.height);
+    GPRHI_Viewport((gp_uint)viewport.x, (gp_uint)viewport.y, (gp_uint)viewport.width, (gp_uint)viewport.height);
 }
 
 void Game::clear(ClearFlags flags, const Vector4& clearColor, float clearDepth, int clearStencil)
 {
-    GLbitfield bits = 0;
+    gp_bitfield bits = 0;
     if (flags & CLEAR_COLOR)
     {
         if (clearColor.x != _clearColor.x ||

@@ -325,11 +325,9 @@ typedef unsigned long GamepadHandle;
     } while(0)
 #endif
 
-#ifdef USE_GLES
 /** Global variable to hold GL errors
  * @script{ignore} */
-extern GLenum __gl_error_code;
-#endif
+extern gp_enum __gl_error_code;
 
 /**
  * Executes the specified AL code and checks the AL error afterwards

@@ -328,7 +328,7 @@ Texture* Texture::create(TextureHandle handle, int width, int height, Format for
     {
         // There is no real way to query for texture type, but an error will be returned if a cube texture is bound to a 2D texture... so check for that
         GPRHI_BindTexture(GP_RHI_TEXTURE_TARGET_TEXTURE_CUPE_MAP, handle);
-        if (glGetError() == GL_NO_ERROR)
+        if (GPRHI_GetError() == GP_NO_ERROR)
         {
             texture->_type = TEXTURE_CUBE;
         }

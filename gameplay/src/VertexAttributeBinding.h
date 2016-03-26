@@ -85,7 +85,7 @@ private:
     public:
         bool enabled;
         int size;
-        GLenum type;
+        gp_enum type;
         bool normalized;
         unsigned int stride;
         void* pointer;
@@ -108,9 +108,9 @@ private:
 
     static VertexAttributeBinding* create(Mesh* mesh, const VertexFormat& vertexFormat, void* vertexPointer, Effect* effect);
 
-    void setVertexAttribPointer(GLuint indx, GLint size, GLenum type, GLboolean normalize, GLsizei stride, void* pointer);
+    void setVertexAttribPointer(gp_uint indx, gp_int size, gp_enum type, gp_boolean normalize, gp_sizei stride, void* pointer);
 
-    GLuint _handle;
+    gp_uint _handle;
     VertexAttribute* _attributes;
     Mesh* _mesh;
     Effect* _effect;

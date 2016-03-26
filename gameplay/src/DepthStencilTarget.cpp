@@ -47,8 +47,8 @@ DepthStencilTarget* DepthStencilTarget::create(const char* id, Format format, un
     GPRHI_RenderbufferStorage(GP_RHI_BUFFER_RENDER_BUFFER, GP_RHI_FORMAT_D24S8, width, height);
 
     // Fall back to less common GLES2 extension combination for seperate depth24 + stencil8 or depth16 + stencil8
-    __gl_error_code = glGetError();
-    if ( __gl_error_code != GL_NO_ERROR)
+    __gl_error_code = GPRHI_GetError();
+    if ( __gl_error_code != GP_NO_ERROR)
     {
         const char* extString = (const char*)glGetString(GL_EXTENSIONS);
 

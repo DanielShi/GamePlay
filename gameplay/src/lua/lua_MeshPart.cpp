@@ -84,7 +84,7 @@ int lua_MeshPart_getIndexBuffer(lua_State* state)
             if ((lua_type(state, 1) == LUA_TUSERDATA))
             {
                 MeshPart* instance = getInstance(state);
-                void* returnPtr = (void*)new GLuint(instance->getIndexBuffer());
+                void* returnPtr = (void*)new gp_uint(instance->getIndexBuffer());
                 if (returnPtr)
                 {
                     gameplay::ScriptUtil::LuaObject* object = (gameplay::ScriptUtil::LuaObject*)lua_newuserdata(state, sizeof(gameplay::ScriptUtil::LuaObject));

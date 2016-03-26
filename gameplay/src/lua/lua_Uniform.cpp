@@ -125,7 +125,7 @@ int lua_Uniform_getType(lua_State* state)
             if ((lua_type(state, 1) == LUA_TUSERDATA))
             {
                 Uniform* instance = getInstance(state);
-                GLenum result = instance->getType();
+                gp_enum result = instance->getType();
 
                 // Push the return value onto the stack.
                 GP_WARN("Attempting to return value with unrecognized type GLenum as an unsigned integer.");

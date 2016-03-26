@@ -306,7 +306,7 @@ static bool drawWireframe(MeshPart* part)
         {
             for (size_t i = 0; i < indexCount; i += 3)
             {
-                GPRHI_ASSERT( GPRHI_DrawElements(GP_RHI_TOPOLOGY_LINE_LOOP, 3, part->getIndexFormat(), ((const GLvoid*)(i*indexSize))) );
+                GPRHI_ASSERT( GPRHI_DrawElements(GP_RHI_TOPOLOGY_LINE_LOOP, 3, part->getIndexFormat(), ((const gp_void*)(i*indexSize))) );
             }
         }
         return true;
@@ -315,7 +315,7 @@ static bool drawWireframe(MeshPart* part)
         {
             for (size_t i = 2; i < indexCount; ++i)
             {
-                GPRHI_ASSERT( GPRHI_DrawElements(GP_RHI_TOPOLOGY_LINE_LOOP, 3, part->getIndexFormat(), ((const GLvoid*)((i-2)*indexSize))) );
+                GPRHI_ASSERT( GPRHI_DrawElements(GP_RHI_TOPOLOGY_LINE_LOOP, 3, part->getIndexFormat(), ((const gp_void*)((i-2)*indexSize))) );
             }
         }
         return true;

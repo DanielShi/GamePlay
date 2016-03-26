@@ -6,7 +6,7 @@
 namespace gameplay
 {
 
-static GLuint __maxVertexAttribs = 0;
+static gp_uint __maxVertexAttribs = 0;
 static std::vector<VertexAttributeBinding*> __vertexAttributeBindingCache;
 
 VertexAttributeBinding::VertexAttributeBinding() :
@@ -75,8 +75,8 @@ VertexAttributeBinding* VertexAttributeBinding::create(Mesh* mesh, const VertexF
     // One-time initialization.
     if (__maxVertexAttribs == 0)
     {
-        GLint temp;
-        GPRHI_ASSERT( glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &temp) );
+        gp_int temp;
+        GPRHI_ASSERT( GPRHI_GetIntegerv(GP_RHI_GET_MAX_VERTEX_ATTRIBS, &temp) );
 
         __maxVertexAttribs = temp;
         if (__maxVertexAttribs <= 0)
@@ -198,7 +198,7 @@ VertexAttributeBinding* VertexAttributeBinding::create(Mesh* mesh, const VertexF
         else
         {
             void* pointer = vertexPointer ? (void*)(((unsigned char*)vertexPointer) + offset) : (void*)offset;
-            b->setVertexAttribPointer(attrib, (GLint)e.size, GP_RHI_FORMAT_FLOAT, GP_FALSE, (GLsizei)vertexFormat.getVertexSize(), pointer);
+            b->setVertexAttribPointer(attrib, (gp_int)e.size, GP_RHI_FORMAT_FLOAT, GP_FALSE, (gp_sizei)vertexFormat.getVertexSize(), pointer);
         }
 
         offset += e.size * sizeof(float);
@@ -212,9 +212,9 @@ VertexAttributeBinding* VertexAttributeBinding::create(Mesh* mesh, const VertexF
     return b;
 }
 
-void VertexAttributeBinding::setVertexAttribPointer(GLuint indx, GLint size, GLenum type, GLboolean normalize, GLsizei stride, void* pointer)
+void VertexAttributeBinding::setVertexAttribPointer(gp_uint indx, gp_int size, gp_enum type, gp_boolean normalize, gp_sizei stride, void* pointer)
 {
-    GP_ASSERT(indx < (GLuint)__maxVertexAttribs);
+    GP_ASSERT(indx < (gp_uint)__maxVertexAttribs);
 
     if (_handle)
     {

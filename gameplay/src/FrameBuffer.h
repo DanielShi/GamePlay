@@ -159,7 +159,7 @@ public:
      *
      * @ return The currently bound framebuffer.
      */
-    FrameBuffer* bind(GLenum type = GL_FRAMEBUFFER);
+    FrameBuffer* bind(gp_enum type = GP_RHI_BUFFER_FRAME_BUFFER);
 
     /**
      * Records a screenshot of what is stored on the current FrameBuffer.
@@ -183,7 +183,7 @@ public:
      *
      * @ return The default framebuffer.
      */
-    static FrameBuffer* bindDefault(GLenum type = GL_FRAMEBUFFER);
+    static FrameBuffer* bindDefault(gp_enum type = GP_RHI_BUFFER_FRAME_BUFFER);
 
     /**
      * Gets the currently bound FrameBuffer.
@@ -209,7 +209,7 @@ private:
      */
     FrameBuffer& operator=(const FrameBuffer&);
 
-    void setRenderTarget(RenderTarget* target, unsigned int index, GLenum textureTarget);
+    void setRenderTarget(RenderTarget* target, unsigned int index, gp_enum textureTarget);
 
     static void initialize();
 
