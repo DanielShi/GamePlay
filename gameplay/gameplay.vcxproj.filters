@@ -22,6 +22,9 @@
     <Filter Include="src\vulkan">
       <UniqueIdentifier>{70aa05c2-4423-4371-bca5-bacad3e5cbea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\RHI">
+      <UniqueIdentifier>{15bb7e95-c353-464e-b90d-b9f773434334}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Plane.cpp">
@@ -764,6 +767,9 @@
     </ClCompile>
     <ClCompile Include="src\lua\lua_VerticalLayout.cpp">
       <Filter>src\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\RHITexture.cpp">
+      <Filter>src\RHI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1516,6 +1522,9 @@
     </ClInclude>
     <ClInclude Include="src\vulkan\VkBase.h">
       <Filter>src\vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\RHIBase.h">
+      <Filter>src\RHI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

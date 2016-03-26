@@ -33,6 +33,15 @@
 #include <chrono>
 #include "Logger.h"
 
+//If use vulkan api, enable this macro below
+//#define  USE_VULKAN
+
+#ifndef USE_VULKAN
+#define USE_GLES
+#endif
+
+#include "RHI/RHIBase.h"
+
 // Bring common functions from C into global namespace
 using std::memcpy;
 using std::fabs;
@@ -222,10 +231,15 @@ using std::va_list;
     #define OPENGL_ES
     #define GP_USE_VAO
 #elif WIN32
-        #define WIN32_LEAN_AND_MEAN
-        #define GLEW_STATIC
-        #include <GL/glew.h>
-        #define GP_USE_VAO
+#ifdef USE_GLES
+	#define WIN32_LEAN_AND_MEAN
+	#define GLEW_STATIC
+	#include <GL/glew.h>
+	#define GP_USE_VAO
+#else
+	// TODO: include vulkan header here
+	#include "vulkan/VkBase.h"	
+#endif
 #elif __linux__
         #define GLEW_STATIC
         #include <GL/glew.h>
@@ -269,6 +283,7 @@ using std::va_list;
 // Hardware buffer
 namespace gameplay
 {
+#ifdef USE_GLES
 /** Vertex attribute. */
 typedef GLint VertexAttribute;
 /** Vertex buffer handle. */
@@ -281,6 +296,20 @@ typedef GLuint TextureHandle;
 typedef GLuint FrameBufferHandle;
 /** Render buffer handle. */
 typedef GLuint RenderBufferHandle;
+#else
+/** Vertex attribute. */
+typedef int VertexAttribute;
+/** Vertex buffer handle. */
+typedef unsigned int VertexBufferHandle;
+/** Index buffer handle. */
+typedef unsigned int IndexBufferHandle;
+/** Texture handle. */
+typedef unsigned int TextureHandle;
+/** Frame buffer handle. */
+typedef unsigned int FrameBufferHandle;
+/** Render buffer handle. */
+typedef unsigned int RenderBufferHandle;
+#endif 
 
 /** Gamepad handle */
 #ifdef __ANDROID__
@@ -309,9 +338,11 @@ typedef unsigned long GamepadHandle;
     } while(0)
 #endif
 
+#ifdef USE_GLES
 /** Global variable to hold GL errors
  * @script{ignore} */
 extern GLenum __gl_error_code;
+#endif
 
 /**
  * Executes the specified AL code and checks the AL error afterwards
@@ -339,5 +370,7 @@ extern ALenum __al_error_code;
  * Accesses the most recently set global AL error.
  */
 #define AL_LAST_ERROR() __al_error_code
+
+
 
 #endif

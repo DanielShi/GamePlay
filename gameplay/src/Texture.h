@@ -38,6 +38,7 @@ public:
     /**
      * Defines the set of supported texture filters.
      */
+#ifdef USE_GLES
     enum Filter
     {
         NEAREST = GL_NEAREST,
@@ -47,25 +48,51 @@ public:
         NEAREST_MIPMAP_LINEAR = GL_NEAREST_MIPMAP_LINEAR,
         LINEAR_MIPMAP_LINEAR = GL_LINEAR_MIPMAP_LINEAR
     };
+#else
+    enum Filter
+    {
+        NEAREST,
+        LINEAR,
+        NEAREST_MIPMAP_NEAREST,
+        LINEAR_MIPMAP_NEAREST,
+        NEAREST_MIPMAP_LINEAR,
+        LINEAR_MIPMAP_LINEAR
+    };
+#endif
 
     /**
      * Defines the set of supported texture wrapping modes.
      */
+#ifdef USE_GLES
     enum Wrap
     {
         REPEAT = GL_REPEAT,
         CLAMP = GL_CLAMP_TO_EDGE
     };
+#else
+    enum Wrap
+    {
+        REPEAT,
+        CLAMP
+    };
+#endif
 
     /**
      * Defines the type of Texture in use.
      */
+#ifdef USE_GLES
     enum Type
     {
         TEXTURE_2D = GL_TEXTURE_2D,
         TEXTURE_CUBE = GL_TEXTURE_CUBE_MAP
     };
-
+#else
+    enum Type
+    {
+        TEXTURE_2D,
+        TEXTURE_CUBE
+    };
+#endif
     /**
      * Defines a face of a Texture of Type: cube.
      */
@@ -326,13 +353,13 @@ private:
 
     static Texture* createCompressedDDS(const char* path);
 
-    static GLubyte* readCompressedPVRTC(const char* path, Stream* stream, GLsizei* width, GLsizei* height, GLenum* format, unsigned int* mipMapCount, unsigned int* faceCount, GLenum faces[6]);
+    static gp_ubyte* readCompressedPVRTC(const char* path, Stream* stream, gp_sizei* width, gp_sizei* height, gp_enum* format, unsigned int* mipMapCount, unsigned int* faceCount, gp_enum faces[6]);
 
-    static GLubyte* readCompressedPVRTCLegacy(const char* path, Stream* stream, GLsizei* width, GLsizei* height, GLenum* format, unsigned int* mipMapCount, unsigned int* faceCount, GLenum faces[6]);
+    static gp_ubyte* readCompressedPVRTCLegacy(const char* path, Stream* stream, gp_sizei* width, gp_sizei* height, gp_enum* format, unsigned int* mipMapCount, unsigned int* faceCount, gp_enum faces[6]);
 
     static int getMaskByteIndex(unsigned int mask);
-    static GLint getFormatInternal(Format format);
-    static GLenum getFormatTexel(Format format);
+    static gp_int getFormatInternal(Format format);
+    static gp_enum getFormatTexel(Format format);
     static size_t getFormatBPP(Format format);
 
     std::string _path;
@@ -350,8 +377,8 @@ private:
     Filter _minFilter;
     Filter _magFilter;
 
-    GLint _internalFormat;
-    GLenum _texelType;
+    gp_int _internalFormat;
+    gp_enum _texelType;
     size_t _bpp;
 };
 

@@ -28,16 +28,26 @@ public:
     /**
      * Defines supported index formats.
      */
+#ifdef USE_GLES
     enum IndexFormat
     {
         INDEX8 = GL_UNSIGNED_BYTE,
         INDEX16 = GL_UNSIGNED_SHORT,
         INDEX32 = GL_UNSIGNED_INT
     };
+#else
+    enum IndexFormat
+    {
+		INDEX8,
+		INDEX16,
+        INDEX32
+    };
+#endif
 
     /**
      * Defines supported primitive types.
      */
+#ifdef USE_GLES
     enum PrimitiveType
     {
         TRIANGLES = GL_TRIANGLES,
@@ -46,7 +56,16 @@ public:
         LINE_STRIP = GL_LINE_STRIP,
         POINTS = GL_POINTS
     };
-
+#else
+    enum PrimitiveType
+    {
+        TRIANGLES,
+        TRIANGLE_STRIP,
+        LINES,
+        LINE_STRIP,
+        POINTS
+    };
+#endif
     /**
      * Constructs a new mesh with the specified vertex format.
      *

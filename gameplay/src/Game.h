@@ -49,6 +49,7 @@ public:
     /**
      * Flags used when clearing the active frame buffer targets.
      */
+#ifdef USE_GLES
     enum ClearFlags
     {
         CLEAR_COLOR = GL_COLOR_BUFFER_BIT,
@@ -59,6 +60,18 @@ public:
         CLEAR_DEPTH_STENCIL = CLEAR_DEPTH | CLEAR_STENCIL,
         CLEAR_COLOR_DEPTH_STENCIL = CLEAR_COLOR | CLEAR_DEPTH | CLEAR_STENCIL
     };
+#else
+    enum ClearFlags
+    {
+        CLEAR_COLOR,
+        CLEAR_DEPTH,
+        CLEAR_STENCIL,
+        CLEAR_COLOR_DEPTH,
+        CLEAR_COLOR_STENCIL,
+        CLEAR_DEPTH_STENCIL,
+        CLEAR_COLOR_DEPTH_STENCIL
+    };
+#endif
 
     /**
      * Constructor.

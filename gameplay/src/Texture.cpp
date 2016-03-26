@@ -60,7 +60,7 @@ Texture::~Texture()
 {
     if (_handle)
     {
-        GL_ASSERT( glDeleteTextures(1, &_handle) );
+        GPRHI_ASSERT( GPRHI_DeleteTextures(1, &_handle) );
         _handle = 0;
     }
 
@@ -161,49 +161,49 @@ Texture* Texture::create(Image* image, bool generateMipmaps)
     }
 }
 
-GLint Texture::getFormatInternal(Format format)
+gp_int Texture::getFormatInternal(Format format)
 {
     switch (format)
     {
         case Texture::RGB888:
         case Texture::RGB565:
-            return GL_RGB;
+            return GP_RHI_FORMAT_RGB;
         case Texture::RGBA8888:
         case Texture::RGBA4444:
         case Texture::RGBA5551:
-            return GL_RGBA;
+            return GP_RHI_FORMAT_RGBA;
         case Texture::ALPHA:
-            return GL_ALPHA;
+            return GP_RHI_FORMAT_ALPHA;
         case Texture::DEPTH:
 #if !defined(OPENGL_ES) || defined(GL_ES_VERSION_3_0)
-            return GL_DEPTH_COMPONENT32F;
+            return GP_RHI_FORMAT_D32F;
 #else
-            return GL_DEPTH_COMPONENT;
+            return GP_RHI_FORMAT_DEPTH;
 #endif
         default:
             return 0;
     }
 }
 
-GLenum Texture::getFormatTexel(Format format)
+gp_enum Texture::getFormatTexel(Format format)
 {
     switch (format)
     {
         case Texture::RGB888:
         case Texture::RGBA8888:
         case Texture::ALPHA:
-            return GL_UNSIGNED_BYTE;
+            return GP_RHI_FORMAT_UNSIGNED_BYTE;
         case Texture::RGB565:
-            return GL_UNSIGNED_SHORT_5_6_5;
+            return GP_RHI_FORMAT_UNSIGNED_SHORT_5_6_5;
         case Texture::RGBA4444:
-            return GL_UNSIGNED_SHORT_4_4_4_4;
+            return GP_RHI_FORMAT_UNSIGNED_SHORT_4_4_4_4;
         case Texture::RGBA5551:
-            return GL_UNSIGNED_SHORT_5_5_5_1;
+            return GP_RHI_FORMAT_UNSIGNED_SHORT_5_5_5_1;
         case Texture::DEPTH:
 #if !defined(OPENGL_ES) || defined(GL_ES_VERSION_3_0)
-            return GL_FLOAT;
+            return GP_RHI_FORMAT_FLOAT;
 #else
-            return GL_UNSIGNED_INT;
+            return GP_RHI_FORMAT_UNSIGNED_INT;
 #endif
         default:
             return 0;
@@ -233,32 +233,32 @@ Texture* Texture::create(Format format, unsigned int width, unsigned int height,
 {
     GP_ASSERT( type == Texture::TEXTURE_2D || type == Texture::TEXTURE_CUBE );
 
-    GLenum target = (GLenum)type;
+    gp_enum target = (gp_enum)type;
 
-    GLint internalFormat = getFormatInternal(format);
+    gp_int internalFormat = getFormatInternal(format);
     GP_ASSERT( internalFormat != 0 );
 
-    GLenum texelType = getFormatTexel(format);
+    gp_enum texelType = getFormatTexel(format);
     GP_ASSERT( texelType != 0 );
 
     // Create the texture.
-    GLuint textureId;
-    GL_ASSERT( glGenTextures(1, &textureId) );
-    GL_ASSERT( glBindTexture(target, textureId) );
-    GL_ASSERT( glPixelStorei(GL_UNPACK_ALIGNMENT, 1) );
+    gp_uint textureId;
+    GPRHI_ASSERT( GPRHI_GenTextures(1, &textureId) );
+    GPRHI_ASSERT( GPRHI_BindTexture(target, textureId) );
+    GPRHI_ASSERT( GPRHI_PixelStorei(GP_RHI_PIXEL_STORE_UNPACK_ALIGHMENT, 1) );
 #ifndef OPENGL_ES
-    // glGenerateMipmap is new in OpenGL 3.0. For OpenGL 2.0 we must fallback to use glTexParameteri
-    // with GL_GENERATE_MIPMAP prior to actual texture creation (glTexImage2D)
+    // glGenerateMipmap is new in OpenGL 3.0. For OpenGL 2.0 we must fallback to use GPRHI_TexParameteri
+    // with GL_GENERATE_MIPMAP prior to actual texture creation (GPRHI_TexImage2D)
     if ( generateMipmaps && !std::addressof(glGenerateMipmap) )
-        GL_ASSERT( glTexParameteri(target, GL_GENERATE_MIPMAP, GL_TRUE) );
+        GPRHI_ASSERT( GPRHI_TexParameteri(target, GP_RHI_TEXTURE_PARAM_GENERATE_MIPMAP, GP_TRUE) );
 #endif
 
     // Load the texture
     size_t bpp = getFormatBPP(format);
     if (type == Texture::TEXTURE_2D)
     {
-        GLenum f = (format == Texture::DEPTH) ? GL_DEPTH_COMPONENT : internalFormat;
-        GL_ASSERT( glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, f, texelType, data) );
+        gp_enum f = (format == Texture::DEPTH) ? GP_RHI_FORMAT_DEPTH : internalFormat;
+        GPRHI_ASSERT( GPRHI_TexImage2D(GP_RHI_TEXTURE_TARGET_TEXTURE_2D, 0, internalFormat, width, height, 0, f, texelType, data) );
     }
     else
     {
@@ -266,7 +266,7 @@ Texture* Texture::create(Format format, unsigned int width, unsigned int height,
         unsigned int textureSize = width * height;
         if (bpp == 0)
         {
-            glDeleteTextures(1, &textureId);
+            GPRHI_DeleteTextures(1, &textureId);
             GP_ERROR("Failed to determine texture size because format is UNKNOWN.");
             return NULL;
         }
@@ -275,7 +275,7 @@ Texture* Texture::create(Format format, unsigned int width, unsigned int height,
         for (unsigned int i = 0; i < 6; i++)
         {
             const unsigned char* texturePtr = (data == NULL) ? NULL : &data[i * textureSize];
-            GL_ASSERT( glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, internalFormat, width, height, 0, internalFormat, texelType, texturePtr) );
+            GPRHI_ASSERT( GPRHI_TexImage2D(GP_RHI_TEXTURE_TARGET_CUBE_MAP_POSITIVE_X + i, 0, internalFormat, width, height, 0, internalFormat, texelType, texturePtr) );
         }
     }
 
@@ -284,18 +284,18 @@ Texture* Texture::create(Format format, unsigned int width, unsigned int height,
     if (format == Texture::DEPTH)
     {
     	minFilter = NEAREST;
-    	GL_ASSERT( glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST) );
-    	GL_ASSERT( glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST) );
-    	GL_ASSERT( glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE) );
-    	GL_ASSERT( glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE) );
+    	GPRHI_ASSERT( GPRHI_TexParameteri(target, GP_RHI_TEXTURE_PARAM_MAG_FILTER, GP_RHI_TEXTURE_PARAM_VALUE_NEAREST) );
+    	GPRHI_ASSERT( GPRHI_TexParameteri(target, GP_RHI_TEXTURE_PARAM_MIN_FILTER, GP_RHI_TEXTURE_PARAM_VALUE_NEAREST) );
+    	GPRHI_ASSERT( GPRHI_TexParameteri(target, GP_RHI_TEXTURE_PARAM_WRAP_S, GP_RHI_TEXTURE_PARAM_VALUE_CLAMP_TO_EDGE) );
+    	GPRHI_ASSERT( GPRHI_TexParameteri(target, GP_RHI_TEXTURE_PARAM_WRAP_T, GP_RHI_TEXTURE_PARAM_VALUE_CLAMP_TO_EDGE) );
 #if !defined(OPENGL_ES) || defined(GL_ES_VERSION_3_0) && GL_ES_VERSION_3_0
-    	GL_ASSERT( glTexParameteri(target, GL_TEXTURE_COMPARE_MODE, GL_NONE) );
+    	GPRHI_ASSERT( GPRHI_TexParameteri(target, GP_RHI_TEXTURE_PARAM_COMPARE_MODE, GP_NONE) );
 #endif    	
     }
     else
     {
     	minFilter = generateMipmaps ? NEAREST_MIPMAP_LINEAR : LINEAR;
-    	GL_ASSERT( glTexParameteri(target, GL_TEXTURE_MIN_FILTER, minFilter) );
+    	GPRHI_ASSERT( GPRHI_TexParameteri(target, GP_RHI_TEXTURE_PARAM_MIN_FILTER, minFilter) );
     }
 
     Texture* texture = new Texture();
@@ -313,7 +313,7 @@ Texture* Texture::create(Format format, unsigned int width, unsigned int height,
 
 
     // Restore the texture id
-    GL_ASSERT( glBindTexture((GLenum)__currentTextureType, __currentTextureId) );
+    GPRHI_ASSERT( GPRHI_BindTexture((gp_enum)__currentTextureType, __currentTextureId) );
 
     return texture;
 }
@@ -323,10 +323,11 @@ Texture* Texture::create(TextureHandle handle, int width, int height, Format for
     GP_ASSERT( handle );
 
     Texture* texture = new Texture();
+	// TODO: Need to refactor here. 
     if (glIsTexture(handle))
     {
         // There is no real way to query for texture type, but an error will be returned if a cube texture is bound to a 2D texture... so check for that
-        glBindTexture(GL_TEXTURE_CUBE_MAP, handle);
+        GPRHI_BindTexture(GP_RHI_TEXTURE_TARGET_TEXTURE_CUPE_MAP, handle);
         if (glGetError() == GL_NO_ERROR)
         {
             texture->_type = TEXTURE_CUBE;
@@ -338,7 +339,7 @@ Texture* Texture::create(TextureHandle handle, int width, int height, Format for
         }
 
         // Restore the texture id
-        GL_ASSERT( glBindTexture((GLenum)__currentTextureType, __currentTextureId) );
+        GPRHI_ASSERT( GPRHI_BindTexture((gp_enum)__currentTextureType, __currentTextureId) );
     }
     texture->_handle = handle;
     texture->_format = format;
@@ -358,11 +359,11 @@ void Texture::setData(const unsigned char* data)
     GP_ASSERT( (!_compressed) );
     GP_ASSERT( (!_cached) );
 
-    GL_ASSERT( glBindTexture((GLenum)_type, _handle) );
+    GPRHI_ASSERT( GPRHI_BindTexture((gp_enum)_type, _handle) );
 
     if (_type == Texture::TEXTURE_2D)
     {
-        GL_ASSERT( glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _width, _height, _internalFormat, _texelType, data) );
+        GPRHI_ASSERT( GPRHI_TexSubImage2D(GP_RHI_TEXTURE_TARGET_TEXTURE_2D, 0, 0, 0, _width, _height, _internalFormat, _texelType, data) );
     }
     else
     {
@@ -372,7 +373,7 @@ void Texture::setData(const unsigned char* data)
         // Texture Cube
         for (unsigned int i = 0; i < 6; i++)
         {
-            GL_ASSERT( glTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, 0, 0, _width, _height, _internalFormat, _texelType, &data[i * textureSize]) );
+            GPRHI_ASSERT( GPRHI_TexSubImage2D(GP_RHI_TEXTURE_TARGET_CUBE_MAP_POSITIVE_X + i, 0, 0, 0, _width, _height, _internalFormat, _texelType, &data[i * textureSize]) );
         }
     }
 
@@ -382,7 +383,7 @@ void Texture::setData(const unsigned char* data)
     }
 
     // Restore the texture id
-    GL_ASSERT( glBindTexture((GLenum)__currentTextureType, __currentTextureId) );
+    GPRHI_ASSERT( GPRHI_BindTexture((gp_enum)__currentTextureType, __currentTextureId) );
 }
 
 // Computes the size of a PVRTC data chunk for a mipmap level of the given size.
@@ -435,12 +436,12 @@ Texture* Texture::createCompressedPVRTC(const char* path)
     }
 
     // Read texture data.
-    GLsizei width, height;
-    GLenum format;
-    GLubyte* data = NULL;
+    gp_sizei width, height;
+    gp_enum format;
+    gp_ubyte* data = NULL;
     unsigned int mipMapCount;
     unsigned int faceCount;
-    GLenum faces[6] = { GL_TEXTURE_2D };
+    gp_enum faces[6] = { GP_RHI_TEXTURE_TARGET_TEXTURE_2D };
 
     if (version == 0x03525650)
     {
@@ -462,13 +463,13 @@ Texture* Texture::createCompressedPVRTC(const char* path)
     int bpp = (format == GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG || format == GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG) ? 2 : 4;
 
     // Generate our texture.
-    GLenum target = faceCount > 1 ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D;
-    GLuint textureId;
-    GL_ASSERT( glGenTextures(1, &textureId) );
-    GL_ASSERT( glBindTexture(target, textureId) );
+    gp_enum target = faceCount > 1 ? GP_RHI_TEXTURE_TARGET_TEXTURE_CUPE_MAP : GP_RHI_TEXTURE_TARGET_TEXTURE_2D;
+    gp_uint textureId;
+    GPRHI_ASSERT( GPRHI_GenTextures(1, &textureId) );
+    GPRHI_ASSERT( GPRHI_BindTexture(target, textureId) );
 
     Filter minFilter = mipMapCount > 1 ? NEAREST_MIPMAP_LINEAR : LINEAR;
-    GL_ASSERT( glTexParameteri(target, GL_TEXTURE_MIN_FILTER, minFilter) );
+    GPRHI_ASSERT( GPRHI_TexParameteri(target, GP_RHI_TEXTURE_PARAM_MIN_FILTER, minFilter) );
 
     Texture* texture = new Texture();
     texture->_handle = textureId;
@@ -480,7 +481,7 @@ Texture* Texture::createCompressedPVRTC(const char* path)
     texture->_minFilter = minFilter;
 
     // Load the data for each level.
-    GLubyte* ptr = data;
+    gp_ubyte* ptr = data;
     for (unsigned int level = 0; level < mipMapCount; ++level)
     {
         unsigned int dataSize = computePVRTCDataSize(width, height, bpp);
@@ -488,7 +489,7 @@ Texture* Texture::createCompressedPVRTC(const char* path)
         for (unsigned int face = 0; face < faceCount; ++face)
         {
             // Upload data to GL.
-            GL_ASSERT(glCompressedTexImage2D(faces[face], level, format, width, height, 0, dataSize, &ptr[face * dataSize]));
+            GPRHI_ASSERT(GPRHI_CompressedTexImage2D(faces[face], level, format, width, height, 0, dataSize, &ptr[face * dataSize]));
         }
 
         width = std::max(width >> 1, 1);
@@ -500,12 +501,12 @@ Texture* Texture::createCompressedPVRTC(const char* path)
     SAFE_DELETE_ARRAY(data);
 
     // Restore the texture id
-    GL_ASSERT( glBindTexture((GLenum)__currentTextureType, __currentTextureId) );
+    GPRHI_ASSERT( GPRHI_BindTexture((gp_enum)__currentTextureType, __currentTextureId) );
 
     return texture;
 }
 
-GLubyte* Texture::readCompressedPVRTC(const char* path, Stream* stream, GLsizei* width, GLsizei* height, GLenum* format, unsigned int* mipMapCount, unsigned int* faceCount, GLenum* faces)
+gp_ubyte* Texture::readCompressedPVRTC(const char* path, Stream* stream, gp_sizei* width, gp_sizei* height, gp_enum* format, unsigned int* mipMapCount, unsigned int* faceCount, gp_enum* faces)
 {
     GP_ASSERT( stream );
     GP_ASSERT( path );
@@ -582,8 +583,8 @@ GLubyte* Texture::readCompressedPVRTC(const char* path, Stream* stream, GLsizei*
         return NULL;
     }
 
-    *width = (GLsizei)header.width;
-    *height = (GLsizei)header.height;
+    *width = (gp_sizei)header.width;
+    *height = (gp_sizei)header.height;
     *mipMapCount = header.mipMapCount;
     *faceCount = std::min(header.faceCount, 6u);
 
@@ -630,13 +631,13 @@ GLubyte* Texture::readCompressedPVRTC(const char* path, Stream* stream, GLsizei*
             }
             for (unsigned int face = 0; face < (*faceCount); ++face)
             {
-                faces[face] = GL_TEXTURE_CUBE_MAP_POSITIVE_X + (faceOrder[face] <= 'Z' ?
+                faces[face] = GP_RHI_TEXTURE_TARGET_CUBE_MAP_POSITIVE_X + (faceOrder[face] <= 'Z' ?
                     ((faceOrder[face] - 'X') * 2) :
                     (((faceOrder[face] - 'x') * 2) + 1));
-                if (faces[face] < GL_TEXTURE_CUBE_MAP_POSITIVE_X)
+                if (faces[face] < GP_RHI_TEXTURE_TARGET_CUBE_MAP_POSITIVE_X)
                 {
                     // Just overwrite this face
-                    faces[face] = GL_TEXTURE_CUBE_MAP_POSITIVE_X;
+                    faces[face] = GP_RHI_TEXTURE_TARGET_CUBE_MAP_POSITIVE_X;
                 }
             }
         }
@@ -645,7 +646,7 @@ GLubyte* Texture::readCompressedPVRTC(const char* path, Stream* stream, GLsizei*
             // Didn't find cubemap metadata. Just assume it's "in order"
             for (unsigned int face = 0; face < (*faceCount); ++face)
             {
-                faces[face] = GL_TEXTURE_CUBE_MAP_POSITIVE_X + face;
+                faces[face] = GP_RHI_TEXTURE_TARGET_CUBE_MAP_POSITIVE_X + face;
             }
         }
     }
@@ -671,7 +672,7 @@ GLubyte* Texture::readCompressedPVRTC(const char* path, Stream* stream, GLsizei*
     }
 
     // Read data.
-    GLubyte* data = new GLubyte[dataSize];
+    gp_ubyte* data = new gp_ubyte[dataSize];
     read = stream->read(data, 1, dataSize);
     if (read != dataSize)
     {
@@ -683,7 +684,7 @@ GLubyte* Texture::readCompressedPVRTC(const char* path, Stream* stream, GLsizei*
     return data;
 }
 
-GLubyte* Texture::readCompressedPVRTCLegacy(const char* path, Stream* stream, GLsizei* width, GLsizei* height, GLenum* format, unsigned int* mipMapCount, unsigned int* faceCount, GLenum* faces)
+gp_ubyte* Texture::readCompressedPVRTCLegacy(const char* path, Stream* stream, gp_sizei* width, gp_sizei* height, gp_enum* format, unsigned int* mipMapCount, unsigned int* faceCount, gp_enum* faces)
 {
     char PVRTCIdentifier[] = "PVR!";
 
@@ -724,7 +725,7 @@ GLubyte* Texture::readCompressedPVRTCLegacy(const char* path, Stream* stream, GL
         return NULL;
     }
 
-    // Format flags for GLenum format.
+    // Format flags for gp_enum format.
     if (header.bpp == 4)
     {
         *format = header.alphaBitMask ? GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG : GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
@@ -739,8 +740,8 @@ GLubyte* Texture::readCompressedPVRTCLegacy(const char* path, Stream* stream, GL
         return NULL;
     }
 
-    *width = (GLsizei)header.width;
-    *height = (GLsizei)header.height;
+    *width = (gp_sizei)header.width;
+    *height = (gp_sizei)header.height;
     *mipMapCount = header.mipmapCount + 1; // +1 because mipmapCount does not include the base level
     *faceCount = 1;
 
@@ -751,7 +752,7 @@ GLubyte* Texture::readCompressedPVRTCLegacy(const char* path, Stream* stream, GL
         *faceCount = std::min(header.surfaceCount, 6u);
         for (unsigned int face = 0; face < (*faceCount); ++face)
         {
-            faces[face] = GL_TEXTURE_CUBE_MAP_POSITIVE_X + face;
+            faces[face] = GP_RHI_TEXTURE_TARGET_CUBE_MAP_POSITIVE_X + face;
         }
     }
     else if ((header.formatflags & 0x4000) != 0)
@@ -762,7 +763,7 @@ GLubyte* Texture::readCompressedPVRTCLegacy(const char* path, Stream* stream, GL
     }
 
     unsigned int totalSize = header.dataSize; // Docs say dataSize is the size of the whole surface, or one face of a texture cube. But this does not appear to be the case with the latest PVRTexTool
-    GLubyte* data = new GLubyte[totalSize];
+    gp_ubyte* data = new gp_ubyte[totalSize];
     read = (int)stream->read(data, 1, totalSize);
     if (read != totalSize)
     {
@@ -828,10 +829,10 @@ Texture* Texture::createCompressedDDS(const char* path)
 
     struct dds_mip_level
     {
-        GLubyte* data;
-        GLsizei width;
-        GLsizei height;
-        GLsizei size;
+        gp_ubyte* data;
+        gp_sizei width;
+        gp_sizei height;
+        gp_sizei size;
     };
 
     Texture* texture = NULL;
@@ -868,8 +869,8 @@ Texture* Texture::createCompressedDDS(const char* path)
 
     // Check type of images. Default is a regular texture
     unsigned int facecount = 1;
-    GLenum faces[6] = { GL_TEXTURE_2D };
-    GLenum target = GL_TEXTURE_2D;
+    gp_enum faces[6] = { GP_RHI_TEXTURE_TARGET_TEXTURE_2D };
+    gp_enum target = GP_RHI_TEXTURE_TARGET_TEXTURE_2D;
     if ((header.dwCaps2 & 0x200/*DDSCAPS2_CUBEMAP*/) != 0)
     {
         facecount = 0;
@@ -877,10 +878,10 @@ Texture* Texture::createCompressedDDS(const char* path)
         {
             if ((header.dwCaps2 & flag) != 0)
             {
-                faces[facecount++] = GL_TEXTURE_CUBE_MAP_POSITIVE_X + off;
+                faces[facecount++] = GP_RHI_TEXTURE_TARGET_CUBE_MAP_POSITIVE_X + off;
             }
         }
-        target = GL_TEXTURE_CUBE_MAP;
+        target = GP_RHI_TEXTURE_TARGET_TEXTURE_CUPE_MAP;
     }
     else if ((header.dwCaps2 & 0x200000/*DDSCAPS2_VOLUME*/) != 0)
     {
@@ -893,11 +894,11 @@ Texture* Texture::createCompressedDDS(const char* path)
     dds_mip_level* mipLevels = new dds_mip_level[header.dwMipMapCount * facecount];
     memset(mipLevels, 0, sizeof(dds_mip_level) * header.dwMipMapCount * facecount);
 
-    GLenum format = 0;
-    GLenum internalFormat = 0;
+    gp_enum format = 0;
+    gp_enum internalFormat = 0;
     bool compressed = false;
-    GLsizei width = header.dwWidth;
-    GLsizei height = header.dwHeight;
+    gp_sizei width = header.dwWidth;
+    gp_sizei height = header.dwHeight;
     Texture::Format textureFormat = Texture::UNKNOWN;
 
     if (header.ddspf.dwFlags & 0x4/*DDPF_FOURCC*/)
@@ -951,7 +952,7 @@ Texture* Texture::createCompressedDDS(const char* path)
                 level.width = width;
                 level.height = height;
                 level.size = std::max(1, (width + 3) >> 2) * std::max(1, (height + 3) >> 2) * bytesPerBlock;
-                level.data = new GLubyte[level.size];
+                level.data = new gp_ubyte[level.size];
 
                 if (stream->read(level.data, 1, level.size) != (unsigned int)level.size)
                 {
@@ -987,13 +988,13 @@ Texture* Texture::createCompressedDDS(const char* path)
 
         if (header.ddspf.dwRGBBitCount == 24)
         {
-            format = internalFormat = GL_RGB;
+            format = internalFormat = GP_RHI_FORMAT_RGB;
             textureFormat = Texture::RGB;
             colorConvert = (ridx != 0) || (gidx != 1) || (bidx != 2);
         }
         else if (header.ddspf.dwRGBBitCount == 32)
         {
-            format = internalFormat = GL_RGBA;
+            format = internalFormat = GP_RHI_FORMAT_RGBA;
             textureFormat = Texture::RGBA;
             if (ridx == 0 && gidx == 1 && bidx == 2)
             {
@@ -1028,7 +1029,7 @@ Texture* Texture::createCompressedDDS(const char* path)
                 level.width = width;
                 level.height = height;
                 level.size = width * height * (header.ddspf.dwRGBBitCount >> 3);
-                level.data = new GLubyte[level.size];
+                level.data = new gp_ubyte[level.size];
 
                 if (stream->read(level.data, 1, level.size) != (unsigned int)level.size)
                 {
@@ -1058,8 +1059,8 @@ Texture* Texture::createCompressedDDS(const char* path)
             // We could be smarter here later and skip color conversion in favor of GL_BGRA_EXT (for format
             // and/or internal format) based on which GL extensions are available.
             // Tip: Using A8B8G8R8 and X8B8G8R8 DDS format maps directly to GL RGBA and requires on no color conversion.
-            GLubyte *pixel, r, g, b, a;
-            if (format == GL_RGB)
+            gp_ubyte *pixel, r, g, b, a;
+            if (format == GP_RHI_FORMAT_RGB)
             {
                 for (unsigned int face = 0; face < facecount; ++face)
                 {
@@ -1075,7 +1076,7 @@ Texture* Texture::createCompressedDDS(const char* path)
                     }
                 }
             }
-            else if (format == GL_RGBA)
+            else if (format == GP_RHI_FORMAT_RGBA)
             {
                 for (unsigned int face = 0; face < facecount; ++face)
                 {
@@ -1105,12 +1106,12 @@ Texture* Texture::createCompressedDDS(const char* path)
     stream->close();
 
     // Generate GL texture.
-    GLuint textureId;
-    GL_ASSERT( glGenTextures(1, &textureId) );
-    GL_ASSERT( glBindTexture(target, textureId) );
+    gp_uint textureId;
+    GPRHI_ASSERT( GPRHI_GenTextures(1, &textureId) );
+    GPRHI_ASSERT( GPRHI_BindTexture(target, textureId) );
 
     Filter minFilter = header.dwMipMapCount > 1 ? NEAREST_MIPMAP_LINEAR : LINEAR;
-    GL_ASSERT( glTexParameteri(target, GL_TEXTURE_MIN_FILTER, minFilter ) );
+    GPRHI_ASSERT( GPRHI_TexParameteri(target, GP_RHI_TEXTURE_PARAM_MIN_FILTER, minFilter ) );
 
     // Create gameplay texture.
     texture = new Texture();
@@ -1125,17 +1126,17 @@ Texture* Texture::createCompressedDDS(const char* path)
     // Load texture data.
     for (unsigned int face = 0; face < facecount; ++face)
     {
-        GLenum texImageTarget = faces[face];
+        gp_enum texImageTarget = faces[face];
         for (unsigned int i = 0; i < header.dwMipMapCount; ++i)
         {
             dds_mip_level& level = mipLevels[i + face * header.dwMipMapCount];
             if (compressed)
             {
-                GL_ASSERT(glCompressedTexImage2D(texImageTarget, i, format, level.width, level.height, 0, level.size, level.data));
+                GPRHI_ASSERT(GPRHI_CompressedTexImage2D(texImageTarget, i, format, level.width, level.height, 0, level.size, level.data));
             }
             else
             {
-                GL_ASSERT(glTexImage2D(texImageTarget, i, internalFormat, level.width, level.height, 0, format, GL_UNSIGNED_BYTE, level.data));
+                GPRHI_ASSERT(GPRHI_TexImage2D(texImageTarget, i, internalFormat, level.width, level.height, 0, format, GP_RHI_FORMAT_UNSIGNED_BYTE, level.data));
             }
 
             // Clean up the texture data.
@@ -1147,7 +1148,7 @@ Texture* Texture::createCompressedDDS(const char* path)
     SAFE_DELETE_ARRAY(mipLevels);
 
     // Restore the texture id
-    GL_ASSERT( glBindTexture((GLenum)__currentTextureType, __currentTextureId) );
+    GPRHI_ASSERT( GPRHI_BindTexture((gp_enum)__currentTextureType, __currentTextureId) );
 
     return texture;
 }
@@ -1186,16 +1187,16 @@ void Texture::generateMipmaps()
 {
     if (!_mipmapped)
     {
-        GLenum target = (GLenum)_type;
-        GL_ASSERT( glBindTexture(target, _handle) );
-        GL_ASSERT( glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST) );
+        gp_enum target = (gp_enum)_type;
+        GPRHI_ASSERT( GPRHI_BindTexture(target, _handle) );
+        GPRHI_ASSERT( GPRHI_Hint(GP_RHI_HINT_GENERATE_MIPMAP_HINT, GP_RHI_HINT_MODE_NICEST) );
         if( std::addressof(glGenerateMipmap) )
-            GL_ASSERT( glGenerateMipmap(target) );
+            GPRHI_ASSERT( GPRHI_GenerateMipmap(target) );
 
         _mipmapped = true;
 
         // Restore the texture id
-        GL_ASSERT( glBindTexture((GLenum)__currentTextureType, __currentTextureId) );
+        GPRHI_ASSERT( GPRHI_BindTexture((gp_enum)__currentTextureType, __currentTextureId) );
     }
 }
 
@@ -1258,10 +1259,10 @@ void Texture::Sampler::bind()
 {
     GP_ASSERT( _texture );
 
-    GLenum target = (GLenum)_texture->_type;
+    gp_enum target = (gp_enum)_texture->_type;
     if (__currentTextureId != _texture->_handle)
     {
-        GL_ASSERT( glBindTexture(target, _texture->_handle) );
+        GPRHI_ASSERT( GPRHI_BindTexture(target, _texture->_handle) );
         __currentTextureId = _texture->_handle;
         __currentTextureType = _texture->_type;
     }
@@ -1269,33 +1270,33 @@ void Texture::Sampler::bind()
     if (_texture->_minFilter != _minFilter)
     {
         _texture->_minFilter = _minFilter;
-        GL_ASSERT( glTexParameteri(target, GL_TEXTURE_MIN_FILTER, (GLenum)_minFilter) );
+        GPRHI_ASSERT( GPRHI_TexParameteri(target, GP_RHI_TEXTURE_PARAM_MIN_FILTER, (gp_enum)_minFilter) );
     }
 
     if (_texture->_magFilter != _magFilter)
     {
         _texture->_magFilter = _magFilter;
-        GL_ASSERT( glTexParameteri(target, GL_TEXTURE_MAG_FILTER, (GLenum)_magFilter) );
+        GPRHI_ASSERT( GPRHI_TexParameteri(target, GP_RHI_TEXTURE_PARAM_MAG_FILTER, (gp_enum)_magFilter) );
     }
 
     if (_texture->_wrapS != _wrapS)
     {
         _texture->_wrapS = _wrapS;
-        GL_ASSERT( glTexParameteri(target, GL_TEXTURE_WRAP_S, (GLenum)_wrapS) );
+        GPRHI_ASSERT( GPRHI_TexParameteri(target, GP_RHI_TEXTURE_PARAM_WRAP_S, (gp_enum)_wrapS) );
     }
 
     if (_texture->_wrapT != _wrapT)
     {
         _texture->_wrapT = _wrapT;
-        GL_ASSERT( glTexParameteri(target, GL_TEXTURE_WRAP_T, (GLenum)_wrapT) );
+        GPRHI_ASSERT( GPRHI_TexParameteri(target, GP_RHI_TEXTURE_PARAM_WRAP_T, (gp_enum)_wrapT) );
     }
 
 #if defined(GL_TEXTURE_WRAP_R) // OpenGL ES 3.x and up, OpenGL 1.2 and up
     if (_texture->_wrapR != _wrapR)
     {
         _texture->_wrapR = _wrapR;
-        if (target == GL_TEXTURE_CUBE_MAP) // We don't want to run this on something that we know will fail
-            GL_ASSERT( glTexParameteri(target, GL_TEXTURE_WRAP_R, (GLenum)_wrapR) );
+        if (target == GP_RHI_TEXTURE_TARGET_TEXTURE_CUPE_MAP) // We don't want to run this on something that we know will fail
+            GPRHI_ASSERT( GPRHI_TexParameteri(target, GP_RHI_TEXTURE_PARAM_WRAP_R, (gp_enum)_wrapR) );
     }
 #endif
 }
