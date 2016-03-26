@@ -36,7 +36,7 @@ FrameBuffer::~FrameBuffer()
 
     // Release GL resource.
     if (_handle)
-        GL_ASSERT( glDeleteFramebuffers(1, &_handle) );
+        GPRHI_ASSERT( GPRHI_DeleteFramebuffers(1, &_handle) );
 
     // Remove self from vector.
     std::vector<FrameBuffer*>::iterator it = std::find(_frameBuffers.begin(), _frameBuffers.end(), this);
@@ -55,11 +55,11 @@ void FrameBuffer::initialize()
     _defaultFrameBuffer = new FrameBuffer(FRAMEBUFFER_ID_DEFAULT, 0, 0, (FrameBufferHandle)fbo);
     _currentFrameBuffer = _defaultFrameBuffer;
 
-    // Query the max supported color attachments. This glGet operation is not supported
+    // Query the max supported color attachments. This GPRHI_Get operation is not supported
     // on GL ES 2.x, so if the define does not exist, assume a value of 1.
 #ifdef GL_MAX_COLOR_ATTACHMENTS
         GLint val;
-        GL_ASSERT( glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &val) );
+        GPRHI_ASSERT( glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &val) );
         _maxRenderTargets = (unsigned int)std::max(1, val);
 #else
         _maxRenderTargets = 1;
@@ -92,7 +92,7 @@ FrameBuffer* FrameBuffer::create(const char* id, unsigned int width, unsigned in
 
     // Create the frame buffer
     GLuint handle = 0;
-    GL_ASSERT( glGenFramebuffers(1, &handle) );
+    GPRHI_ASSERT( GPRHI_GenFramebuffers(1, &handle) );
     FrameBuffer* frameBuffer = new FrameBuffer(id, width, height, handle);
     
     // Create the render target array for the new frame buffer
@@ -161,7 +161,7 @@ void FrameBuffer::setRenderTarget(RenderTarget* target, unsigned int index)
     if (_renderTargets[index] == target)
         return;
 
-    setRenderTarget(target, index, GL_TEXTURE_2D);
+    setRenderTarget(target, index, GP_RHI_TEXTURE_TARGET_TEXTURE_2D);
 }
 
 void FrameBuffer::setRenderTarget(RenderTarget* target, Texture::CubeFace face, unsigned int index)
@@ -169,7 +169,7 @@ void FrameBuffer::setRenderTarget(RenderTarget* target, Texture::CubeFace face, 
     GP_ASSERT(face >= Texture::POSITIVE_X && face <= Texture::NEGATIVE_Z);
     GP_ASSERT(!target || (target->getTexture() && target->getTexture()->getType() == Texture::TEXTURE_CUBE));
 
-    setRenderTarget(target, index, GL_TEXTURE_CUBE_MAP_POSITIVE_X + face);
+    setRenderTarget(target, index, GP_RHI_TEXTURE_TARGET_CUBE_MAP_POSITIVE_X + face);
 }
 
 void FrameBuffer::setRenderTarget(RenderTarget* target, unsigned int index, GLenum textureTarget)
@@ -194,33 +194,33 @@ void FrameBuffer::setRenderTarget(RenderTarget* target, unsigned int index, GLen
         target->addRef();
 
         // Now set this target as the color attachment corresponding to index.
-        GL_ASSERT( glBindFramebuffer(GL_FRAMEBUFFER, _handle) );
+        GPRHI_ASSERT( GPRHI_BindFramebuffer(GP_RHI_BUFFER_FRAME_BUFFER, _handle) );
         GLenum attachment;
         if (target->getTexture()->getFormat() == Texture::DEPTH)
         {
-            attachment = GL_DEPTH_ATTACHMENT;
-            GL_ASSERT( glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, textureTarget, _renderTargets[index]->getTexture()->getHandle(), 0));
+            attachment = GP_RHI_BUFFER_ATTACHMENT_DEPTH;
+            GPRHI_ASSERT( GPRHI_FramebufferTexture2D(GP_RHI_BUFFER_FRAME_BUFFER, attachment, textureTarget, _renderTargets[index]->getTexture()->getHandle(), 0));
 #ifndef OPENGL_ES            
-            glDrawBuffer(GL_NONE);
-            glReadBuffer(GL_NONE);
+            GPRHI_DrawBuffer(GP_NONE);
+            GPRHI_ReadBuffer(GP_NONE);
 #elif defined(GL_ES_VERSION_3_0) && GL_ES_VERSION_3_0
-            glDrawBuffers(0, NULL);
+            GPRHI_DrawBuffers(0, NULL);
 #endif
         }
         else
         {
-            attachment = GL_COLOR_ATTACHMENT0 + index;
-            GL_ASSERT( glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, textureTarget, _renderTargets[index]->getTexture()->getHandle(), 0) );
+            attachment = GP_RHI_BUFFER_ATTACHMENT_COLOR_0 + index;
+            GPRHI_ASSERT( GPRHI_FramebufferTexture2D(GP_RHI_BUFFER_FRAME_BUFFER, attachment, textureTarget, _renderTargets[index]->getTexture()->getHandle(), 0) );
         }
 
-        GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-        if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
+        GLenum fboStatus = GPRHI_CheckFramebufferStatus(GP_RHI_BUFFER_FRAME_BUFFER);
+        if (fboStatus != GP_RHI_FRAMEBUFFER_COMPLETE)
         {
             GP_ERROR("Framebuffer status incomplete: 0x%x", fboStatus);
         }
 
         // Restore the FBO binding
-        GL_ASSERT( glBindFramebuffer(GL_FRAMEBUFFER, _currentFrameBuffer->_handle) );
+        GPRHI_ASSERT( GPRHI_BindFramebuffer(GP_RHI_BUFFER_FRAME_BUFFER, _currentFrameBuffer->_handle) );
     }
 }
 
@@ -255,28 +255,28 @@ void FrameBuffer::setDepthStencilTarget(DepthStencilTarget* target)
         target->addRef();
 
         // Now set this target as the color attachment corresponding to index.
-        GL_ASSERT( glBindFramebuffer(GL_FRAMEBUFFER, _handle) );
+        GPRHI_ASSERT( GPRHI_BindFramebuffer(GP_RHI_BUFFER_FRAME_BUFFER, _handle) );
 
         // Attach the render buffer to the framebuffer
-        GL_ASSERT( glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthStencilTarget->_depthBuffer) );
+        GPRHI_ASSERT( GPRHI_FramebufferRenderbuffer(GP_RHI_BUFFER_FRAME_BUFFER, GP_RHI_BUFFER_ATTACHMENT_DEPTH, GP_RHI_BUFFER_RENDER_BUFFER, _depthStencilTarget->_depthBuffer) );
         if (target->isPacked())
         {
-            GL_ASSERT( glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _depthStencilTarget->_depthBuffer) );
+            GPRHI_ASSERT( GPRHI_FramebufferRenderbuffer(GP_RHI_BUFFER_FRAME_BUFFER, GP_RHI_BUFFER_ATTACHMENT_STENCIL, GP_RHI_BUFFER_RENDER_BUFFER, _depthStencilTarget->_depthBuffer) );
         }
         else if (target->getFormat() == DepthStencilTarget::DEPTH_STENCIL)
         {
-            GL_ASSERT( glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _depthStencilTarget->_stencilBuffer) );
+            GPRHI_ASSERT( GPRHI_FramebufferRenderbuffer(GP_RHI_BUFFER_FRAME_BUFFER, GP_RHI_BUFFER_ATTACHMENT_STENCIL, GP_RHI_BUFFER_RENDER_BUFFER, _depthStencilTarget->_stencilBuffer) );
         }
 
         // Check the framebuffer is good to go.
-        GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-        if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
+        GLenum fboStatus = GPRHI_CheckFramebufferStatus(GP_RHI_BUFFER_FRAME_BUFFER);
+        if (fboStatus != GP_RHI_FRAMEBUFFER_COMPLETE)
         {
             GP_ERROR("Framebuffer status incomplete: 0x%x", fboStatus);
         }
 
         // Restore the FBO binding
-        GL_ASSERT( glBindFramebuffer(GL_FRAMEBUFFER, _currentFrameBuffer->_handle) );
+        GPRHI_ASSERT( GPRHI_BindFramebuffer(GP_RHI_BUFFER_FRAME_BUFFER, _currentFrameBuffer->_handle) );
     }
 }
 
@@ -292,7 +292,7 @@ bool FrameBuffer::isDefault() const
 
 FrameBuffer* FrameBuffer::bind(GLenum type)
 {
-    GL_ASSERT( glBindFramebuffer(type, _handle) );
+    GPRHI_ASSERT( GPRHI_BindFramebuffer(type, _handle) );
     FrameBuffer* previousFrameBuffer = _currentFrameBuffer;
     _currentFrameBuffer = this;
     return previousFrameBuffer;
@@ -306,8 +306,8 @@ void FrameBuffer::getScreenshot(Image* image)
     unsigned int height = _currentFrameBuffer->getHeight();
 
 	if (image->getWidth() == width && image->getHeight() == height) {
-		GLenum format = image->getFormat() == Image::RGB ? GL_RGB : GL_RGBA;
-        GL_ASSERT( glReadPixels(0, 0, width, height, format, GL_UNSIGNED_BYTE, image->getData()) );
+		GLenum format = image->getFormat() == Image::RGB ? GP_RHI_FORMAT_RGB : GP_RHI_FORMAT_RGBA;
+        GPRHI_ASSERT( GPRHI_ReadPixels(0, 0, width, height, format, GP_RHI_FORMAT_UNSIGNED_BYTE, image->getData()) );
 	}
 }
 
@@ -321,7 +321,7 @@ Image* FrameBuffer::createScreenshot(Image::Format format)
 
 FrameBuffer* FrameBuffer::bindDefault(GLenum type)
 {
-    GL_ASSERT( glBindFramebuffer(type, _defaultFrameBuffer->_handle) );
+    GPRHI_ASSERT( GPRHI_BindFramebuffer(type, _defaultFrameBuffer->_handle) );
     _currentFrameBuffer = _defaultFrameBuffer;
     return _defaultFrameBuffer;
 }

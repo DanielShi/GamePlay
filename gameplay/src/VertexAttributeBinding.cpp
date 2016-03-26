@@ -29,7 +29,7 @@ VertexAttributeBinding::~VertexAttributeBinding()
 
     if (_handle)
     {
-        GL_ASSERT( glDeleteVertexArrays(1, &_handle) );
+        GPRHI_ASSERT( GPRHI_DeleteVertexArrays(1, &_handle) );
         _handle = 0;
     }
 }
@@ -76,7 +76,7 @@ VertexAttributeBinding* VertexAttributeBinding::create(Mesh* mesh, const VertexF
     if (__maxVertexAttribs == 0)
     {
         GLint temp;
-        GL_ASSERT( glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &temp) );
+        GPRHI_ASSERT( glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &temp) );
 
         __maxVertexAttribs = temp;
         if (__maxVertexAttribs <= 0)
@@ -92,11 +92,11 @@ VertexAttributeBinding* VertexAttributeBinding::create(Mesh* mesh, const VertexF
 #ifdef GP_USE_VAO
     if (mesh && glGenVertexArrays)
     {
-        GL_ASSERT( GPRHI_BindBuffer(GP_RHI_BUFFER_ARRAY, 0) );
-        GL_ASSERT( GPRHI_BindBuffer(GP_RHI_BUFFER_INDEX, 0) );
+        GPRHI_ASSERT( GPRHI_BindBuffer(GP_RHI_BUFFER_ARRAY, 0) );
+        GPRHI_ASSERT( GPRHI_BindBuffer(GP_RHI_BUFFER_INDEX, 0) );
 
         // Use hardware VAOs.
-        GL_ASSERT( glGenVertexArrays(1, &b->_handle) );
+        GPRHI_ASSERT( GPRHI_GenVertexArrays(1, &b->_handle) );
 
         if (b->_handle == 0)
         {
@@ -106,10 +106,10 @@ VertexAttributeBinding* VertexAttributeBinding::create(Mesh* mesh, const VertexF
         }
 
         // Bind the new VAO.
-        GL_ASSERT( glBindVertexArray(b->_handle) );
+        GPRHI_ASSERT( GPRHI_BindVertexArray(b->_handle) );
 
-        // Bind the Mesh VBO so our glVertexAttribPointer calls use it.
-        GL_ASSERT( GPRHI_BindBuffer(GP_RHI_BUFFER_ARRAY, mesh->getVertexBuffer()) );
+        // Bind the Mesh VBO so our GPRHI_VertexAttribPointer calls use it.
+        GPRHI_ASSERT( GPRHI_BindBuffer(GP_RHI_BUFFER_ARRAY, mesh->getVertexBuffer()) );
     }
     else
 #endif
@@ -119,11 +119,11 @@ VertexAttributeBinding* VertexAttributeBinding::create(Mesh* mesh, const VertexF
         for (unsigned int i = 0; i < __maxVertexAttribs; ++i)
         {
             // Set GL defaults
-            attribs[i].enabled = GL_FALSE;
+            attribs[i].enabled = GP_FALSE;
             attribs[i].size = 4;
             attribs[i].stride = 0;
-            attribs[i].type = GL_FLOAT;
-            attribs[i].normalized = GL_FALSE;
+            attribs[i].type = GP_RHI_FORMAT_FLOAT;
+            attribs[i].normalized = GP_FALSE;
             attribs[i].pointer = 0;
         }
         b->_attributes = attribs;
@@ -198,7 +198,7 @@ VertexAttributeBinding* VertexAttributeBinding::create(Mesh* mesh, const VertexF
         else
         {
             void* pointer = vertexPointer ? (void*)(((unsigned char*)vertexPointer) + offset) : (void*)offset;
-            b->setVertexAttribPointer(attrib, (GLint)e.size, GL_FLOAT, GL_FALSE, (GLsizei)vertexFormat.getVertexSize(), pointer);
+            b->setVertexAttribPointer(attrib, (GLint)e.size, GP_RHI_FORMAT_FLOAT, GP_FALSE, (GLsizei)vertexFormat.getVertexSize(), pointer);
         }
 
         offset += e.size * sizeof(float);
@@ -206,7 +206,7 @@ VertexAttributeBinding* VertexAttributeBinding::create(Mesh* mesh, const VertexF
 
     if (b->_handle)
     {
-        GL_ASSERT( glBindVertexArray(0) );
+        GPRHI_ASSERT( GPRHI_BindVertexArray(0) );
     }
 
     return b;
@@ -219,8 +219,8 @@ void VertexAttributeBinding::setVertexAttribPointer(GLuint indx, GLint size, GLe
     if (_handle)
     {
         // Hardware mode.
-        GL_ASSERT( glVertexAttribPointer(indx, size, type, normalize, stride, pointer) );
-        GL_ASSERT( glEnableVertexAttribArray(indx) );
+        GPRHI_ASSERT( GPRHI_VertexAttribPointer(indx, size, type, normalize, stride, pointer) );
+        GPRHI_ASSERT( GPRHI_EnableVertexAttribArray(indx) );
     }
     else
     {
@@ -240,18 +240,18 @@ void VertexAttributeBinding::bind()
     if (_handle)
     {
         // Hardware mode
-        GL_ASSERT( glBindVertexArray(_handle) );
+        GPRHI_ASSERT( GPRHI_BindVertexArray(_handle) );
     }
     else
     {
         // Software mode
         if (_mesh)
         {
-            GL_ASSERT( GPRHI_BindBuffer(GP_RHI_BUFFER_ARRAY, _mesh->getVertexBuffer()) );
+            GPRHI_ASSERT( GPRHI_BindBuffer(GP_RHI_BUFFER_ARRAY, _mesh->getVertexBuffer()) );
         }
         else
         {
-            GL_ASSERT( GPRHI_BindBuffer(GP_RHI_BUFFER_ARRAY, 0) );
+            GPRHI_ASSERT( GPRHI_BindBuffer(GP_RHI_BUFFER_ARRAY, 0) );
         }
 
         GP_ASSERT(_attributes);
@@ -260,8 +260,8 @@ void VertexAttributeBinding::bind()
             VertexAttribute& a = _attributes[i];
             if (a.enabled)
             {
-                GL_ASSERT( glVertexAttribPointer(i, a.size, a.type, a.normalized, a.stride, a.pointer) );
-                GL_ASSERT( glEnableVertexAttribArray(i) );
+                GPRHI_ASSERT( GPRHI_VertexAttribPointer(i, a.size, a.type, a.normalized, a.stride, a.pointer) );
+                GPRHI_ASSERT( GPRHI_EnableVertexAttribArray(i) );
             }
         }
     }
@@ -272,14 +272,14 @@ void VertexAttributeBinding::unbind()
     if (_handle)
     {
         // Hardware mode
-        GL_ASSERT( glBindVertexArray(0) );
+        GPRHI_ASSERT( GPRHI_BindVertexArray(0) );
     }
     else
     {
         // Software mode
         if (_mesh)
         {
-            GL_ASSERT( GPRHI_BindBuffer(GP_RHI_BUFFER_ARRAY, 0) );
+            GPRHI_ASSERT( GPRHI_BindBuffer(GP_RHI_BUFFER_ARRAY, 0) );
         }
 
         GP_ASSERT(_attributes);
@@ -287,7 +287,7 @@ void VertexAttributeBinding::unbind()
         {
             if (_attributes[i].enabled)
             {
-                GL_ASSERT( glDisableVertexAttribArray(i) );
+                GPRHI_ASSERT( GPRHI_EnableVertexAttribArray(i) );
             }
         }
     }
