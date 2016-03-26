@@ -110,3 +110,24 @@ gp_enum GPRHI_ReadPixels(gp_int _x, gp_int _y, gp_sizei _width, gp_sizei _height
 	GL_ASSERT(glReadPixels(_x, _y, _width, _height, _format, _type, _pixels));
 	return 0;
 }
+//Render Buffer
+gp_enum GPRHI_GenRenderbuffers(gp_sizei _n, gp_uint* _renderbuffers)
+{
+	GL_ASSERT(glGenRenderbuffers(_n, _renderbuffers));
+	return 0;
+}
+gp_enum GPRHI_DeleteRenderbuffers(gp_sizei _n, const gp_uint* _renderbuffers)
+{
+	GL_ASSERT(glDeleteRenderbuffers(_n, _renderbuffers));
+	return 0;
+}
+gp_enum GPRHI_BindRenderbuffer(gp_enum _target, gp_uint _renderbuffer)
+{
+	GL_ASSERT(glBindRenderbuffer(_target, _renderbuffer));
+	return 0;
+}
+gp_enum GPRHI_RenderbufferStorage(gp_enum _target, gp_enum _format, gp_uint _width, gp_uint _height)
+{
+	GL_ASSERT(glRenderbufferStorage(_target, _format, _width, _height));
+	return 0;
+}

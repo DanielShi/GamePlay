@@ -65,7 +65,11 @@ enum GP_RHI_FORMAT {
 	GP_RHI_FORMAT_RGBA									= GL_RGBA,
 	GP_RHI_FORMAT_ALPHA									= GL_ALPHA,
 	GP_RHI_FORMAT_D32F									= GL_DEPTH_COMPONENT32,
+	GP_RHI_FORMAT_D24F									= GL_DEPTH_COMPONENT24,
+	GP_RHI_FORMAT_D16F									= GL_DEPTH_COMPONENT16,
 	GP_RHI_FORMAT_DEPTH									= GL_DEPTH_COMPONENT,
+	GP_RHI_FORMAT_D24S8									= GL_DEPTH24_STENCIL8,
+	GP_RHI_FORMAT_S8									= GL_STENCIL_INDEX8,
 	//the buffer data format
 	GP_RHI_FORMAT_UNSIGNED_BYTE							= GL_UNSIGNED_BYTE,
 	GP_RHI_FORMAT_UNSIGNED_SHORT						= GL_UNSIGNED_SHORT,
@@ -162,7 +166,11 @@ gp_enum GPRHI_DrawBuffers(gp_sizei _n, const gp_enum* _bufs);
 gp_enum GPRHI_CheckFramebufferStatus(gp_enum _target);
 gp_enum GPRHI_FramebufferRenderbuffer(gp_enum _target, gp_enum _attachment, gp_enum _renderbuffertarget, gp_uint _renderbuffer);
 gp_enum GPRHI_ReadPixels(gp_int _x, gp_int _y, gp_sizei _width, gp_sizei _height, gp_enum _format, gp_enum _type, gp_void *_pixels);
-
+//Render Buffer
+gp_enum GPRHI_GenRenderbuffers(gp_sizei _n, gp_uint* _renderbuffers);
+gp_enum GPRHI_DeleteRenderbuffers(gp_sizei _n, const gp_uint* _renderbuffers);
+gp_enum GPRHI_BindRenderbuffer(gp_enum _target, gp_uint _renderbuffer);
+gp_enum GPRHI_RenderbufferStorage(gp_enum _target, gp_enum _format, gp_uint _width, gp_uint _height);
 
 
 

@@ -22,9 +22,9 @@ DepthStencilTarget::~DepthStencilTarget()
 {
     // Destroy GL resources.
     if (_depthBuffer)
-        GL_ASSERT( glDeleteRenderbuffers(1, &_depthBuffer) );
+        GPRHI_ASSERT( GPRHI_DeleteRenderbuffers(1, &_depthBuffer) );
     if (_stencilBuffer)
-        GL_ASSERT( glDeleteRenderbuffers(1, &_stencilBuffer) );
+        GPRHI_ASSERT( GPRHI_DeleteRenderbuffers(1, &_stencilBuffer) );
 
     // Remove from vector.
     std::vector<DepthStencilTarget*>::iterator it = std::find(__depthStencilTargets.begin(), __depthStencilTargets.end(), this);
@@ -40,11 +40,11 @@ DepthStencilTarget* DepthStencilTarget::create(const char* id, Format format, un
     DepthStencilTarget* depthStencilTarget = new DepthStencilTarget(id, format, width, height);
 
     // Create a render buffer for this new depth+stencil target
-    GL_ASSERT( glGenRenderbuffers(1, &depthStencilTarget->_depthBuffer) );
-    GL_ASSERT( glBindRenderbuffer(GL_RENDERBUFFER, depthStencilTarget->_depthBuffer) );
+    GPRHI_ASSERT( GPRHI_GenRenderbuffers(1, &depthStencilTarget->_depthBuffer) );
+    GPRHI_ASSERT( GPRHI_BindRenderbuffer(GP_RHI_BUFFER_RENDER_BUFFER, depthStencilTarget->_depthBuffer) );
 
-    // First try to add storage for the most common standard GL_DEPTH24_STENCIL8 
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+    // First try to add storage for the most common standard GP_RHI_FORMAT_D24S8 
+    GPRHI_RenderbufferStorage(GP_RHI_BUFFER_RENDER_BUFFER, GP_RHI_FORMAT_D24S8, width, height);
 
     // Fall back to less common GLES2 extension combination for seperate depth24 + stencil8 or depth16 + stencil8
     __gl_error_code = glGetError();
@@ -54,30 +54,30 @@ DepthStencilTarget* DepthStencilTarget::create(const char* id, Format format, un
 
         if (strstr(extString, "GL_OES_packed_depth_stencil") != 0)
         {
-            GL_ASSERT( glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8_OES, width, height) );
+            GPRHI_ASSERT( GPRHI_RenderbufferStorage(GP_RHI_BUFFER_RENDER_BUFFER, GL_DEPTH24_STENCIL8_OES, width, height) );
             depthStencilTarget->_packed = true;
         }
         else
         {
             if (strstr(extString, "GL_OES_depth24") != 0)
             {
-                GL_ASSERT( glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height) );
+                GPRHI_ASSERT( GPRHI_RenderbufferStorage(GP_RHI_BUFFER_RENDER_BUFFER, GP_RHI_FORMAT_D24F, width, height) );
             }
             else
             {
-                GL_ASSERT( glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height) );
+                GPRHI_ASSERT( GPRHI_RenderbufferStorage(GP_RHI_BUFFER_RENDER_BUFFER, GP_RHI_FORMAT_D16F, width, height) );
             }
             if (format == DepthStencilTarget::DEPTH_STENCIL)
             {
-                GL_ASSERT( glGenRenderbuffers(1, &depthStencilTarget->_stencilBuffer) );
-                GL_ASSERT( glBindRenderbuffer(GL_RENDERBUFFER, depthStencilTarget->_stencilBuffer) );
-                GL_ASSERT( glRenderbufferStorage(GL_RENDERBUFFER, GL_STENCIL_INDEX8, width, height) );
+                GPRHI_ASSERT( GPRHI_GenRenderbuffers(1, &depthStencilTarget->_stencilBuffer) );
+                GPRHI_ASSERT( GPRHI_BindRenderbuffer(GP_RHI_BUFFER_RENDER_BUFFER, depthStencilTarget->_stencilBuffer) );
+                GPRHI_ASSERT( GPRHI_RenderbufferStorage(GP_RHI_BUFFER_RENDER_BUFFER, GP_RHI_FORMAT_S8, width, height) );
             }
         }
     }
     else
     {
-        // Packed format GL_DEPTH24_STENCIL8 is used mark format as packed.
+        // Packed format GP_RHI_FORMAT_D24S8 is used mark format as packed.
         depthStencilTarget->_packed = true;
     }
 
