@@ -40,7 +40,6 @@
 #define USE_GLES
 #endif
 
-#include "RHI/RHIBase.h"
 
 // Bring common functions from C into global namespace
 using std::memcpy;
@@ -270,6 +269,9 @@ using std::va_list;
     #endif
 #endif
 
+//include RHI header here after GL/Vulkan includes
+#include "RHI/RHIBase.h"
+
 // Graphics (GLSL)
 #define VERTEX_ATTRIBUTE_POSITION_NAME              "a_position"
 #define VERTEX_ATTRIBUTE_NORMAL_NAME                "a_normal"
@@ -283,33 +285,18 @@ using std::va_list;
 // Hardware buffer
 namespace gameplay
 {
-#ifdef USE_GLES
 /** Vertex attribute. */
-typedef GLint VertexAttribute;
+typedef gp_int VertexAttribute;
 /** Vertex buffer handle. */
-typedef GLuint VertexBufferHandle;
+typedef gp_uint VertexBufferHandle;
 /** Index buffer handle. */
-typedef GLuint IndexBufferHandle;
+typedef gp_uint IndexBufferHandle;
 /** Texture handle. */
-typedef GLuint TextureHandle;
+typedef gp_uint TextureHandle;
 /** Frame buffer handle. */
-typedef GLuint FrameBufferHandle;
+typedef gp_uint FrameBufferHandle;
 /** Render buffer handle. */
-typedef GLuint RenderBufferHandle;
-#else
-/** Vertex attribute. */
-typedef int VertexAttribute;
-/** Vertex buffer handle. */
-typedef unsigned int VertexBufferHandle;
-/** Index buffer handle. */
-typedef unsigned int IndexBufferHandle;
-/** Texture handle. */
-typedef unsigned int TextureHandle;
-/** Frame buffer handle. */
-typedef unsigned int FrameBufferHandle;
-/** Render buffer handle. */
-typedef unsigned int RenderBufferHandle;
-#endif 
+typedef gp_uint RenderBufferHandle;
 
 /** Gamepad handle */
 #ifdef __ANDROID__
