@@ -32,11 +32,11 @@ Effect::~Effect()
         // If our program object is currently bound, unbind it before we're destroyed.
         if (__currentEffect == this)
         {
-            GL_ASSERT( glUseProgram(0) );
+            GPRHI_ASSERT( GPRHI_UseProgram(0) );
             __currentEffect = NULL;
         }
 
-        GL_ASSERT( glDeleteProgram(_program) );
+        GPRHI_ASSERT( GPRHI_DeleteProgram(_program) );
         _program = 0;
     }
 }
@@ -106,7 +106,7 @@ Effect* Effect::createFromSource(const char* vshSource, const char* fshSource, c
 static void replaceDefines(const char* defines, std::string& out)
 {
     Properties* graphicsConfig = Game::getInstance()->getConfig()->getNamespace("graphics", true);
-    const char* globalDefines = graphicsConfig ? graphicsConfig->getString("shaderDefines") : NULL;
+    const char* GPRHI_obalDefines = graphicsConfig ? graphicsConfig->getString("shaderDefines") : NULL;
 
     // Build full semicolon delimited list of defines
 #ifdef OPENGL_ES
@@ -114,11 +114,11 @@ static void replaceDefines(const char* defines, std::string& out)
 #else
     out = "";
 #endif
-    if (globalDefines && strlen(globalDefines) > 0)
+    if (GPRHI_obalDefines && strlen(GPRHI_obalDefines) > 0)
     {
         if (out.length() > 0)
             out += ';';
-        out += globalDefines;
+        out += GPRHI_obalDefines;
     }
     if (defines && strlen(defines) > 0)
     {
@@ -255,13 +255,13 @@ Effect* Effect::createFromSource(const char* vshPath, const char* vshSource, con
             vshSourceStr += "\n";
     }
     shaderSource[2] = vshPath ? vshSourceStr.c_str() :  vshSource;
-    GL_ASSERT( vertexShader = glCreateShader(GL_VERTEX_SHADER) );
-    GL_ASSERT( glShaderSource(vertexShader, SHADER_SOURCE_LENGTH, shaderSource, NULL) );
-    GL_ASSERT( glCompileShader(vertexShader) );
-    GL_ASSERT( glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success) );
-    if (success != GL_TRUE)
+    GPRHI_ASSERT( vertexShader = GPRHI_CreateShader(GP_RHI_VERTEX_SHADER) );
+    GPRHI_ASSERT( GPRHI_ShaderSource(vertexShader, SHADER_SOURCE_LENGTH, shaderSource, NULL) );
+    GPRHI_ASSERT( GPRHI_CompileShader(vertexShader) );
+    GPRHI_ASSERT( GPRHI_GetShaderiv(vertexShader, GP_RHI_SHADER_GET_COMPILE_STATUS, &success) );
+    if (success != GP_TRUE)
     {
-        GL_ASSERT( glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &length) );
+        GPRHI_ASSERT( GPRHI_GetShaderiv(vertexShader, GP_RHI_SHADER_GET_INFO_LOG_LENGTH, &length) );
         if (length == 0)
         {
             length = 4096;
@@ -269,7 +269,7 @@ Effect* Effect::createFromSource(const char* vshPath, const char* vshSource, con
         if (length > 0)
         {
             infoLog = new char[length];
-            GL_ASSERT( glGetShaderInfoLog(vertexShader, length, NULL, infoLog) );
+            GPRHI_ASSERT( GPRHI_GetShaderInfoLog(vertexShader, length, NULL, infoLog) );
             infoLog[length-1] = '\0';
         }
 
@@ -281,7 +281,7 @@ Effect* Effect::createFromSource(const char* vshPath, const char* vshSource, con
         SAFE_DELETE_ARRAY(infoLog);
 
         // Clean up.
-        GL_ASSERT( glDeleteShader(vertexShader) );
+        GPRHI_ASSERT( GPRHI_DeleteShader(vertexShader) );
 
         return NULL;
     }
@@ -296,13 +296,13 @@ Effect* Effect::createFromSource(const char* vshPath, const char* vshSource, con
             fshSourceStr += "\n";
     }
     shaderSource[2] = fshPath ? fshSourceStr.c_str() : fshSource;
-    GL_ASSERT( fragmentShader = glCreateShader(GL_FRAGMENT_SHADER) );
-    GL_ASSERT( glShaderSource(fragmentShader, SHADER_SOURCE_LENGTH, shaderSource, NULL) );
-    GL_ASSERT( glCompileShader(fragmentShader) );
-    GL_ASSERT( glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success) );
-    if (success != GL_TRUE)
+    GPRHI_ASSERT( fragmentShader = GPRHI_CreateShader(GP_RHI_PIXEL_SHADER) );
+    GPRHI_ASSERT( GPRHI_ShaderSource(fragmentShader, SHADER_SOURCE_LENGTH, shaderSource, NULL) );
+    GPRHI_ASSERT( GPRHI_CompileShader(fragmentShader) );
+    GPRHI_ASSERT( GPRHI_GetShaderiv(fragmentShader, GP_RHI_SHADER_GET_COMPILE_STATUS, &success) );
+    if (success != GP_TRUE)
     {
-        GL_ASSERT( glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &length) );
+        GPRHI_ASSERT( GPRHI_GetShaderiv(fragmentShader, GP_RHI_SHADER_GET_INFO_LOG_LENGTH, &length) );
         if (length == 0)
         {
             length = 4096;
@@ -310,7 +310,7 @@ Effect* Effect::createFromSource(const char* vshPath, const char* vshSource, con
         if (length > 0)
         {
             infoLog = new char[length];
-            GL_ASSERT( glGetShaderInfoLog(fragmentShader, length, NULL, infoLog) );
+            GPRHI_ASSERT( GPRHI_GetShaderInfoLog(fragmentShader, length, NULL, infoLog) );
             infoLog[length-1] = '\0';
         }
         
@@ -322,27 +322,27 @@ Effect* Effect::createFromSource(const char* vshPath, const char* vshSource, con
         SAFE_DELETE_ARRAY(infoLog);
 
         // Clean up.
-        GL_ASSERT( glDeleteShader(vertexShader) );
-        GL_ASSERT( glDeleteShader(fragmentShader) );
+        GPRHI_ASSERT( GPRHI_DeleteShader(vertexShader) );
+        GPRHI_ASSERT( GPRHI_DeleteShader(fragmentShader) );
 
         return NULL;
     }
 
     // Link program.
-    GL_ASSERT( program = glCreateProgram() );
-    GL_ASSERT( glAttachShader(program, vertexShader) );
-    GL_ASSERT( glAttachShader(program, fragmentShader) );
-    GL_ASSERT( glLinkProgram(program) );
-    GL_ASSERT( glGetProgramiv(program, GL_LINK_STATUS, &success) );
+    GPRHI_ASSERT( program = GPRHI_CreateProgram() );
+    GPRHI_ASSERT( GPRHI_AttachShader(program, vertexShader) );
+    GPRHI_ASSERT( GPRHI_AttachShader(program, fragmentShader) );
+    GPRHI_ASSERT( GPRHI_LinkProgram(program) );
+    GPRHI_ASSERT( GPRHI_GetProgramiv(program, GP_RHI_SHADER_GET_LINK_STATUS, &success) );
 
     // Delete shaders after linking.
-    GL_ASSERT( glDeleteShader(vertexShader) );
-    GL_ASSERT( glDeleteShader(fragmentShader) );
+    GPRHI_ASSERT( GPRHI_DeleteShader(vertexShader) );
+    GPRHI_ASSERT( GPRHI_DeleteShader(fragmentShader) );
 
     // Check link status.
-    if (success != GL_TRUE)
+    if (success != GP_TRUE)
     {
-        GL_ASSERT( glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length) );
+        GPRHI_ASSERT( GPRHI_GetProgramiv(program, GP_RHI_SHADER_GET_INFO_LOG_LENGTH, &length) );
         if (length == 0)
         {
             length = 4096;
@@ -350,14 +350,14 @@ Effect* Effect::createFromSource(const char* vshPath, const char* vshSource, con
         if (length > 0)
         {
             infoLog = new char[length];
-            GL_ASSERT( glGetProgramInfoLog(program, length, NULL, infoLog) );
+            GPRHI_ASSERT( GPRHI_GetProgramInfoLog(program, length, NULL, infoLog) );
             infoLog[length-1] = '\0';
         }
         GP_ERROR("Linking program failed (%s,%s): %s", vshPath == NULL ? "NULL" : vshPath, fshPath == NULL ? "NULL" : fshPath, infoLog == NULL ? "" : infoLog);
         SAFE_DELETE_ARRAY(infoLog);
 
         // Clean up.
-        GL_ASSERT( glDeleteProgram(program) );
+        GPRHI_ASSERT( GPRHI_DeleteProgram(program) );
 
         return NULL;
     }
@@ -367,31 +367,31 @@ Effect* Effect::createFromSource(const char* vshPath, const char* vshSource, con
     effect->_program = program;
 
     // Query and store vertex attribute meta-data from the program.
-    // NOTE: Rather than using glBindAttribLocation to explicitly specify our own
+    // NOTE: Rather than using GPRHI_BindAttribLocation to explicitly specify our own
     // preferred attribute locations, we're going to query the locations that were
     // automatically bound by the GPU. While it can sometimes be convenient to use
-    // glBindAttribLocation, some vendors actually reserve certain attribute indices
+    // GPRHI_BindAttribLocation, some vendors actually reserve certain attribute indices
     // and therefore using this function can create compatibility issues between
     // different hardware vendors.
     GLint activeAttributes;
-    GL_ASSERT( glGetProgramiv(program, GL_ACTIVE_ATTRIBUTES, &activeAttributes) );
+    GPRHI_ASSERT( GPRHI_GetProgramiv(program, GP_RHI_SHADER_GET_ACTIVE_ATTRIBUTES, &activeAttributes) );
     if (activeAttributes > 0)
     {
-        GL_ASSERT( glGetProgramiv(program, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &length) );
+        GPRHI_ASSERT( GPRHI_GetProgramiv(program, GP_RHI_SHADER_GET_ACTIVE_ATTRIBUTE_MAX_LENGTH, &length) );
         if (length > 0)
         {
-            GLchar* attribName = new GLchar[length + 1];
-            GLint attribSize;
-            GLenum attribType;
-            GLint attribLocation;
+            gp_char* attribName = new gp_char[length + 1];
+            gp_int attribSize;
+            gp_enum attribType;
+            gp_int attribLocation;
             for (int i = 0; i < activeAttributes; ++i)
             {
                 // Query attribute info.
-                GL_ASSERT( glGetActiveAttrib(program, i, length, NULL, &attribSize, &attribType, attribName) );
+                GPRHI_ASSERT( GPRHI_GetActiveAttrib(program, i, length, NULL, &attribSize, &attribType, attribName) );
                 attribName[length] = '\0';
 
                 // Query the pre-assigned attribute location.
-                GL_ASSERT( attribLocation = glGetAttribLocation(program, attribName) );
+                GPRHI_ASSERT( attribLocation = GPRHI_GetAttribLocation(program, attribName) );
 
                 // Assign the vertex attribute mapping for the effect.
                 effect->_vertexAttributes[attribName] = attribLocation;
@@ -402,21 +402,21 @@ Effect* Effect::createFromSource(const char* vshPath, const char* vshSource, con
 
     // Query and store uniforms from the program.
     GLint activeUniforms;
-    GL_ASSERT( glGetProgramiv(program, GL_ACTIVE_UNIFORMS, &activeUniforms) );
+    GPRHI_ASSERT( GPRHI_GetProgramiv(program, GP_RHI_SHADER_GET_ACTIVE_UNIFORMS, &activeUniforms) );
     if (activeUniforms > 0)
     {
-        GL_ASSERT( glGetProgramiv(program, GL_ACTIVE_UNIFORM_MAX_LENGTH, &length) );
+        GPRHI_ASSERT( GPRHI_GetProgramiv(program, GP_RHI_SHADER_GET_ACTIVE_UNIFORM_MAX_LENGTH, &length) );
         if (length > 0)
         {
-            GLchar* uniformName = new GLchar[length + 1];
-            GLint uniformSize;
-            GLenum uniformType;
-            GLint uniformLocation;
+            gp_char* uniformName = new gp_char[length + 1];
+            gp_int uniformSize;
+            gp_enum uniformType;
+            gp_int uniformLocation;
             unsigned int samplerIndex = 0;
             for (int i = 0; i < activeUniforms; ++i)
             {
                 // Query uniform info.
-                GL_ASSERT( glGetActiveUniform(program, i, length, NULL, &uniformSize, &uniformType, uniformName) );
+                GPRHI_ASSERT( GPRHI_GetActiveUniform(program, i, length, NULL, &uniformSize, &uniformType, uniformName) );
                 uniformName[length] = '\0';  // null terminate
                 if (length > 3)
                 {
@@ -432,14 +432,14 @@ Effect* Effect::createFromSource(const char* vshPath, const char* vshSource, con
                 }
 
                 // Query the pre-assigned uniform location.
-                GL_ASSERT( uniformLocation = glGetUniformLocation(program, uniformName) );
+                GPRHI_ASSERT( uniformLocation = GPRHI_GetUniformLocation(program, uniformName) );
 
                 Uniform* uniform = new Uniform();
                 uniform->_effect = effect;
                 uniform->_name = uniformName;
                 uniform->_location = uniformLocation;
                 uniform->_type = uniformType;
-                if (uniformType == GL_SAMPLER_2D || uniformType == GL_SAMPLER_CUBE)
+                if (uniformType == GP_RHI_UNIFORM_SAMPLER_2D || uniformType == GP_RHI_UNIFORM_SAMPLER_CUBE)
                 {
                     uniform->_index = samplerIndex;
                     samplerIndex += uniformSize;
@@ -479,7 +479,7 @@ Uniform* Effect::getUniform(const char* name) const
 	}
 
     GLint uniformLocation;
-    GL_ASSERT( uniformLocation = glGetUniformLocation(_program, name) );
+    GPRHI_ASSERT( uniformLocation = GPRHI_GetUniformLocation(_program, name) );
     if (uniformLocation > -1)
 	{
 		// Check for array uniforms ("u_directionalLightColor[0]" -> "u_directionalLightColor")
@@ -530,110 +530,110 @@ unsigned int Effect::getUniformCount() const
 void Effect::setValue(Uniform* uniform, float value)
 {
     GP_ASSERT(uniform);
-    GL_ASSERT( glUniform1f(uniform->_location, value) );
+    GPRHI_ASSERT( GPRHI_Uniform1f(uniform->_location, value) );
 }
 
 void Effect::setValue(Uniform* uniform, const float* values, unsigned int count)
 {
     GP_ASSERT(uniform);
     GP_ASSERT(values);
-    GL_ASSERT( glUniform1fv(uniform->_location, count, values) );
+    GPRHI_ASSERT( GPRHI_Uniform1fv(uniform->_location, count, values) );
 }
 
 void Effect::setValue(Uniform* uniform, int value)
 {
     GP_ASSERT(uniform);
-    GL_ASSERT( glUniform1i(uniform->_location, value) );
+    GPRHI_ASSERT( GPRHI_Uniform1i(uniform->_location, value) );
 }
 
 void Effect::setValue(Uniform* uniform, const int* values, unsigned int count)
 {
     GP_ASSERT(uniform);
     GP_ASSERT(values);
-    GL_ASSERT( glUniform1iv(uniform->_location, count, values) );
+    GPRHI_ASSERT( GPRHI_Uniform1iv(uniform->_location, count, values) );
 }
 
 void Effect::setValue(Uniform* uniform, const Matrix& value)
 {
     GP_ASSERT(uniform);
-    GL_ASSERT( glUniformMatrix4fv(uniform->_location, 1, GL_FALSE, value.m) );
+    GPRHI_ASSERT( GPRHI_UniformMatrix4fv(uniform->_location, 1, GP_FALSE, value.m) );
 }
 
 void Effect::setValue(Uniform* uniform, const Matrix* values, unsigned int count)
 {
     GP_ASSERT(uniform);
     GP_ASSERT(values);
-    GL_ASSERT( glUniformMatrix4fv(uniform->_location, count, GL_FALSE, (GLfloat*)values) );
+    GPRHI_ASSERT( GPRHI_UniformMatrix4fv(uniform->_location, count, GP_FALSE, (GLfloat*)values) );
 }
 
 void Effect::setValue(Uniform* uniform, const Vector2& value)
 {
     GP_ASSERT(uniform);
-    GL_ASSERT( glUniform2f(uniform->_location, value.x, value.y) );
+    GPRHI_ASSERT( GPRHI_Uniform2f(uniform->_location, value.x, value.y) );
 }
 
 void Effect::setValue(Uniform* uniform, const Vector2* values, unsigned int count)
 {
     GP_ASSERT(uniform);
     GP_ASSERT(values);
-    GL_ASSERT( glUniform2fv(uniform->_location, count, (GLfloat*)values) );
+    GPRHI_ASSERT( GPRHI_Uniform2fv(uniform->_location, count, (GLfloat*)values) );
 }
 
 void Effect::setValue(Uniform* uniform, const Vector3& value)
 {
     GP_ASSERT(uniform);
-    GL_ASSERT( glUniform3f(uniform->_location, value.x, value.y, value.z) );
+    GPRHI_ASSERT( GPRHI_Uniform3f(uniform->_location, value.x, value.y, value.z) );
 }
 
 void Effect::setValue(Uniform* uniform, const Vector3* values, unsigned int count)
 {
     GP_ASSERT(uniform);
     GP_ASSERT(values);
-    GL_ASSERT( glUniform3fv(uniform->_location, count, (GLfloat*)values) );
+    GPRHI_ASSERT( GPRHI_Uniform3fv(uniform->_location, count, (GLfloat*)values) );
 }
 
 void Effect::setValue(Uniform* uniform, const Vector4& value)
 {
     GP_ASSERT(uniform);
-    GL_ASSERT( glUniform4f(uniform->_location, value.x, value.y, value.z, value.w) );
+    GPRHI_ASSERT( GPRHI_Uniform4f(uniform->_location, value.x, value.y, value.z, value.w) );
 }
 
 void Effect::setValue(Uniform* uniform, const Vector4* values, unsigned int count)
 {
     GP_ASSERT(uniform);
     GP_ASSERT(values);
-    GL_ASSERT( glUniform4fv(uniform->_location, count, (GLfloat*)values) );
+    GPRHI_ASSERT( GPRHI_Uniform4fv(uniform->_location, count, (GLfloat*)values) );
 }
 
 void Effect::setValue(Uniform* uniform, const Texture::Sampler* sampler)
 {
     GP_ASSERT(uniform);
-    GP_ASSERT(uniform->_type == GL_SAMPLER_2D || uniform->_type == GL_SAMPLER_CUBE);
+    GP_ASSERT(uniform->_type == GP_RHI_UNIFORM_SAMPLER_2D || uniform->_type == GP_RHI_UNIFORM_SAMPLER_CUBE);
     GP_ASSERT(sampler);
-    GP_ASSERT((sampler->getTexture()->getType() == Texture::TEXTURE_2D && uniform->_type == GL_SAMPLER_2D) || 
-        (sampler->getTexture()->getType() == Texture::TEXTURE_CUBE && uniform->_type == GL_SAMPLER_CUBE));
+    GP_ASSERT((sampler->getTexture()->getType() == Texture::TEXTURE_2D && uniform->_type == GP_RHI_UNIFORM_SAMPLER_2D) || 
+        (sampler->getTexture()->getType() == Texture::TEXTURE_CUBE && uniform->_type == GP_RHI_UNIFORM_SAMPLER_CUBE));
 
-    GL_ASSERT( glActiveTexture(GL_TEXTURE0 + uniform->_index) );
+    GPRHI_ASSERT( GPRHI_ActiveTexture(GP_RHI_TEXTURE_SLOT_0 + uniform->_index) );
 
     // Bind the sampler - this binds the texture and applies sampler state
     const_cast<Texture::Sampler*>(sampler)->bind();
 
-    GL_ASSERT( glUniform1i(uniform->_location, uniform->_index) );
+    GPRHI_ASSERT( GPRHI_Uniform1i(uniform->_location, uniform->_index) );
 }
 
 void Effect::setValue(Uniform* uniform, const Texture::Sampler** values, unsigned int count)
 {
     GP_ASSERT(uniform);
-    GP_ASSERT(uniform->_type == GL_SAMPLER_2D || uniform->_type == GL_SAMPLER_CUBE);
+    GP_ASSERT(uniform->_type == GP_RHI_UNIFORM_SAMPLER_2D || uniform->_type == GP_RHI_UNIFORM_SAMPLER_CUBE);
     GP_ASSERT(values);
 
     // Set samplers as active and load texture unit array
     GLint units[32];
     for (unsigned int i = 0; i < count; ++i)
     {
-        GP_ASSERT((const_cast<Texture::Sampler*>(values[i])->getTexture()->getType() == Texture::TEXTURE_2D && uniform->_type == GL_SAMPLER_2D) || 
-            (const_cast<Texture::Sampler*>(values[i])->getTexture()->getType() == Texture::TEXTURE_CUBE && uniform->_type == GL_SAMPLER_CUBE));
-        GL_ASSERT( glActiveTexture(GL_TEXTURE0 + uniform->_index + i) );
+        GP_ASSERT((const_cast<Texture::Sampler*>(values[i])->getTexture()->getType() == Texture::TEXTURE_2D && uniform->_type == GP_RHI_UNIFORM_SAMPLER_2D) || 
+            (const_cast<Texture::Sampler*>(values[i])->getTexture()->getType() == Texture::TEXTURE_CUBE && uniform->_type == GP_RHI_UNIFORM_SAMPLER_CUBE));
+        GPRHI_ASSERT( GPRHI_ActiveTexture(GP_RHI_TEXTURE_SLOT_0 + uniform->_index + i) );
 
         // Bind the sampler - this binds the texture and applies sampler state
         const_cast<Texture::Sampler*>(values[i])->bind();
@@ -642,12 +642,12 @@ void Effect::setValue(Uniform* uniform, const Texture::Sampler** values, unsigne
     }
 
     // Pass texture unit array to GL
-    GL_ASSERT( glUniform1iv(uniform->_location, count, units) );
+    GPRHI_ASSERT( GPRHI_Uniform1iv(uniform->_location, count, units) );
 }
 
 void Effect::bind()
 {
-   GL_ASSERT( glUseProgram(_program) );
+   GPRHI_ASSERT( GPRHI_UseProgram(_program) );
 
     __currentEffect = this;
 }

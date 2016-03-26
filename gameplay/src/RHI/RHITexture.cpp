@@ -52,3 +52,4 @@ gp_enum GPRHI_Hint(gp_enum _target, gp_enum _mode)
 }
 
 #include "RHIBuffer.cpp"
+#include "RHIShader.cpp"

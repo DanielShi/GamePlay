@@ -10,6 +10,8 @@ typedef void			gp_void;
 typedef ptrdiff_t		gp_sizeiptr;
 typedef ptrdiff_t		gp_intptr;
 typedef bool			gp_boolean;
+typedef char			gp_char;
+typedef float			gp_float;
 
 #define GP_TRUE			(1)
 #define GP_FALSE		(0)
@@ -134,6 +136,61 @@ enum GP_RHI_HINT {
 enum GP_RHI_HINT_MODE {
 	GP_RHI_HINT_MODE_NICEST								= GL_NICEST,
 };
+
+enum GP_RHI_SHADER_TYPE {
+	GP_RHI_VERTEX_SHADER								= GL_VERTEX_SHADER,
+	GP_RHI_PIXEL_SHADER									= GL_FRAGMENT_SHADER,
+};
+
+enum GP_RHI_SHADER_GET {
+	GP_RHI_SHADER_GET_INFO_LOG_LENGTH					= GL_INFO_LOG_LENGTH,
+	GP_RHI_SHADER_GET_COMPILE_STATUS 					= GL_COMPILE_STATUS,
+	GP_RHI_SHADER_GET_LINK_STATUS						= GL_LINK_STATUS,
+	GP_RHI_SHADER_GET_ACTIVE_ATTRIBUTES					= GL_ACTIVE_ATTRIBUTES,
+	GP_RHI_SHADER_GET_ACTIVE_ATTRIBUTE_MAX_LENGTH		= GL_ACTIVE_ATTRIBUTE_MAX_LENGTH,
+	GP_RHI_SHADER_GET_ACTIVE_UNIFORMS					= GL_ACTIVE_UNIFORMS,
+	GP_RHI_SHADER_GET_ACTIVE_UNIFORM_MAX_LENGTH			= GL_ACTIVE_UNIFORM_MAX_LENGTH,
+};
+
+enum GP_RHI_UNIFORM_TYPE {
+	GP_RHI_UNIFORM_SAMPLER_2D							= GL_SAMPLER_2D,
+	GP_RHI_UNIFORM_SAMPLER_CUBE 						= GL_SAMPLER_CUBE,
+};
+
+enum GP_RHI_TEXTURE_SLOT {
+	GP_RHI_TEXTURE_SLOT_0								= GL_TEXTURE0, 
+	GP_RHI_TEXTURE_SLOT_1								= GL_TEXTURE1, 
+	GP_RHI_TEXTURE_SLOT_2								= GL_TEXTURE2, 
+	GP_RHI_TEXTURE_SLOT_3								= GL_TEXTURE3, 
+	GP_RHI_TEXTURE_SLOT_4								= GL_TEXTURE4, 
+	GP_RHI_TEXTURE_SLOT_5								= GL_TEXTURE5, 
+	GP_RHI_TEXTURE_SLOT_6								= GL_TEXTURE6, 
+	GP_RHI_TEXTURE_SLOT_7								= GL_TEXTURE7, 
+	GP_RHI_TEXTURE_SLOT_8								= GL_TEXTURE8, 
+	GP_RHI_TEXTURE_SLOT_9								= GL_TEXTURE9, 
+	GP_RHI_TEXTURE_SLOT_10								= GL_TEXTURE10,
+	GP_RHI_TEXTURE_SLOT_11								= GL_TEXTURE11,
+	GP_RHI_TEXTURE_SLOT_12								= GL_TEXTURE12,
+	GP_RHI_TEXTURE_SLOT_13								= GL_TEXTURE13,
+	GP_RHI_TEXTURE_SLOT_14								= GL_TEXTURE14,
+	GP_RHI_TEXTURE_SLOT_15								= GL_TEXTURE15,
+	GP_RHI_TEXTURE_SLOT_16								= GL_TEXTURE16,
+	GP_RHI_TEXTURE_SLOT_17								= GL_TEXTURE17,
+	GP_RHI_TEXTURE_SLOT_18								= GL_TEXTURE18,
+	GP_RHI_TEXTURE_SLOT_19								= GL_TEXTURE19,
+	GP_RHI_TEXTURE_SLOT_20								= GL_TEXTURE20,
+	GP_RHI_TEXTURE_SLOT_21								= GL_TEXTURE21,
+	GP_RHI_TEXTURE_SLOT_22								= GL_TEXTURE22,
+	GP_RHI_TEXTURE_SLOT_23								= GL_TEXTURE23,
+	GP_RHI_TEXTURE_SLOT_24								= GL_TEXTURE24,
+	GP_RHI_TEXTURE_SLOT_25								= GL_TEXTURE25,
+	GP_RHI_TEXTURE_SLOT_26								= GL_TEXTURE26,
+	GP_RHI_TEXTURE_SLOT_27								= GL_TEXTURE27,
+	GP_RHI_TEXTURE_SLOT_28								= GL_TEXTURE28,
+	GP_RHI_TEXTURE_SLOT_29								= GL_TEXTURE29,
+	GP_RHI_TEXTURE_SLOT_30								= GL_TEXTURE30,
+	GP_RHI_TEXTURE_SLOT_31								= GL_TEXTURE31,
+};
 #else
 #error not implemented
 #endif
@@ -171,12 +228,6 @@ gp_enum GPRHI_GenRenderbuffers(gp_sizei _n, gp_uint* _renderbuffers);
 gp_enum GPRHI_DeleteRenderbuffers(gp_sizei _n, const gp_uint* _renderbuffers);
 gp_enum GPRHI_BindRenderbuffer(gp_enum _target, gp_uint _renderbuffer);
 gp_enum GPRHI_RenderbufferStorage(gp_enum _target, gp_enum _format, gp_uint _width, gp_uint _height);
-
-
-
-
-
-
 //Textures
 gp_enum GPRHI_DeleteTextures(gp_int _n, gp_uint* _textures);
 gp_enum GPRHI_GenTextures(gp_int _n, gp_uint* _textures);
@@ -188,5 +239,35 @@ gp_enum GPRHI_TexSubImage2D (gp_enum _target, gp_int _level, gp_int _xoffset, gp
 gp_enum GPRHI_CompressedTexImage2D(gp_enum _target, gp_int _level, gp_enum _internalformat, gp_sizei _width, gp_sizei _height, gp_int _border, gp_sizei _imageSize, const gp_void* _data);
 gp_enum GPRHI_GenerateMipmap(gp_enum _target);
 gp_enum GPRHI_Hint(gp_enum _target, gp_enum _mode);
+//Shaders
+gp_uint GPRHI_CreateProgram();
+gp_enum GPRHI_LinkProgram(gp_uint _program);
+gp_enum GPRHI_UseProgram(gp_uint _program);
+gp_enum GPRHI_DeleteProgram(gp_uint _program);
+gp_uint GPRHI_CreateShader(gp_enum _type);
+gp_enum GPRHI_DeleteShader(gp_uint _shader);
+gp_enum GPRHI_ShaderSource(gp_uint _shader, gp_sizei _count, const gp_char** _strings, const gp_int* _lengths);
+gp_enum GPRHI_CompileShader(gp_uint _shader);
+gp_enum GPRHI_GetShaderiv(gp_uint _shader, gp_enum _pname, gp_int* _param);
+gp_enum GPRHI_GetShaderInfoLog(gp_uint _shader, gp_sizei _bufSize, gp_sizei* _length, gp_char* _infoLog);
+gp_enum GPRHI_AttachShader(gp_uint _program, gp_uint _shader);
+gp_enum GPRHI_Uniform1f(gp_int _location, gp_float _v0);
+gp_enum GPRHI_Uniform1fv(gp_int _location, gp_sizei _count, const gp_float* _values);
+gp_enum GPRHI_Uniform1i(gp_int _location, gp_int _v0);
+gp_enum GPRHI_Uniform1iv(gp_int _location, gp_sizei _count, const gp_int* _values);
+gp_enum GPRHI_UniformMatrix4fv(gp_int _location, gp_sizei _count, gp_boolean _transpose, const gp_float* _values);
+gp_enum GPRHI_Uniform2f(gp_int _location, gp_float _v0, gp_float _v1);
+gp_enum GPRHI_Uniform2fv(gp_int _location, gp_sizei _count, const gp_float* _values);
+gp_enum GPRHI_Uniform3f(gp_int _location, gp_float _v0, gp_float _v1, gp_float _v2);
+gp_enum GPRHI_Uniform3fv(gp_int _location, gp_sizei _count, const gp_float* _values);
+gp_enum GPRHI_Uniform4f(gp_int _location, gp_float _v0, gp_float _v1, gp_float _v2, gp_float _v3);
+gp_enum GPRHI_Uniform4fv(gp_int _location, gp_sizei _count, const gp_float* _values);
+gp_enum GPRHI_ActiveTexture(gp_enum _texture);
+gp_enum GPRHI_GetProgramiv(gp_uint _program, gp_enum _pname, gp_int* _param);
+gp_enum GPRHI_GetProgramInfoLog(gp_uint _program, gp_sizei _bufSize, gp_sizei* _length, gp_char* _infoLog);
+gp_enum GPRHI_GetActiveAttrib(gp_uint _program, gp_uint _index, gp_sizei _maxLength, gp_sizei* _length, gp_int* _size, gp_enum* _type, gp_char* _name);
+gp_int  GPRHI_GetAttribLocation(gp_uint _program, const gp_char* _name);
+gp_enum GPRHI_GetActiveUniform(gp_uint _program, gp_uint _index, gp_sizei _maxLength, gp_sizei* _length, gp_int* _size, gp_enum* _type, gp_char* _name);
+gp_int  GPRHI_GetUniformLocation(gp_uint _program, const gp_char* _name);
 
 #endif

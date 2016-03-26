@@ -1612,6 +1612,12 @@
     <None Include="src\RHI\RHIBuffer.cpp">
       <Filter>src\RHI</Filter>
     </None>
+    <None Include="src\RHI\RHIShader.cpp">
+      <Filter>src\RHI</Filter>
+    </None>
+    <None Include="src\RHI\RHIOp.cpp">
+      <Filter>src\RHI</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\PhysicsFixedConstraint.inl">
