@@ -203,6 +203,7 @@ enum GP_RHI_RENDER_STATE {
 	GP_RHI_RS_CULL_FACE									= GL_CULL_FACE,
 	GP_RHI_RS_DEPTH_TEST								= GL_DEPTH_TEST,
 	GP_RHI_RS_STENCIL_TEST								= GL_STENCIL_TEST,
+	GP_RHI_RS_MULTISAMPLE								= GL_MULTISAMPLE,
 };
 
 enum GP_RHI_BLEND_FUNC {
@@ -440,6 +441,7 @@ enum GP_RHI_RENDER_STATE {
 	GP_RHI_RS_CULL_FACE								,	
 	GP_RHI_RS_DEPTH_TEST							,	
 	GP_RHI_RS_STENCIL_TEST							,	
+	GP_RHI_RS_MULTISAMPLE							,
 };
 
 enum GP_RHI_BLEND_FUNC {
@@ -594,5 +596,6 @@ gp_enum GPRHI_DrawArrays(gp_enum _mode, gp_int _first, gp_sizei _count);
 //Getter
 gp_enum GPRHI_GetIntegerv(gp_enum _cap, gp_int* _value);
 gp_enum GPRHI_GetError();
+gp_boolean GPRHI_IsTexture(gp_uint _texture);
 
 #endif

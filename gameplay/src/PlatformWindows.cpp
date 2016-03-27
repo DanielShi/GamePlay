@@ -8,7 +8,10 @@
 #include "Form.h"
 #include "Vector2.h"
 #include "ScriptController.h"
+#include <windows.h>
+#ifdef USE_GLES
 #include <GL/wglew.h>
+#endif
 #include <windowsx.h>
 #include <Commdlg.h>
 #include <shellapi.h>
@@ -591,7 +594,8 @@ bool createWindow(WindowCreationParams* params, HWND* hwnd, HDC* hdc)
     return true;
 }
 
-bool initializeGL(WindowCreationParams* params)
+#ifdef USE_GLES
+bool initializeContext(WindowCreationParams* params)
 {
     // Create a temporary window and context to we can initialize GLEW and get access
     // to additional OpenGL extension functions. This is a neccessary evil since the
@@ -794,6 +798,13 @@ bool initializeGL(WindowCreationParams* params)
 
     return true;
 }
+#else
+bool initializeContext(WindowCreationParams* params)
+{
+#pragma message ("TODO --------------------------- not implemented ")
+	return false;
+}
+#endif 
 
 Platform* Platform::create(Game* game)
 {
@@ -937,7 +948,7 @@ Platform* Platform::create(Game* game)
         }
     }
 
-    if (!initializeGL(&params))
+    if (!initializeContext(&params))
         goto error;
 
     // Show the window.
@@ -1078,11 +1089,14 @@ bool Platform::isVsync()
 void Platform::setVsync(bool enable)
 {
     __vsync = enable;
-
+#ifdef USE_GLES
     if (wglSwapIntervalEXT) 
         wglSwapIntervalEXT(__vsync ? 1 : 0);
     else 
         __vsync = false;
+#else
+#pragma message ("TODO ----------------------not implemented")
+#endif 
 }
 
 void Platform::swapBuffers()
@@ -1105,11 +1119,11 @@ void Platform::setMultiSampling(bool enabled)
 
     if (enabled)
     {
-        glEnable(GL_MULTISAMPLE);
+        GPRHI_Enable(GP_RHI_RS_MULTISAMPLE);
     }
     else
     {
-        glDisable(GL_MULTISAMPLE);
+        GPRHI_Disable(GP_RHI_RS_MULTISAMPLE);
     }
 
     __multiSampling = enabled;

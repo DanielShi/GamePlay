@@ -547,7 +547,7 @@ void RenderState::StateBlock::bindNoRestore()
     }
     if ((_bits & RS_BLEND_FUNC) && (_blendSrc != _defaultState->_blendSrc || _blendDst != _defaultState->_blendDst))
     {
-        GPRHI_ASSERT( GPRHI_BlendFunc((GLenum)_blendSrc, (GLenum)_blendDst) );
+        GPRHI_ASSERT( GPRHI_BlendFunc((gp_enum)_blendSrc, (gp_enum)_blendDst) );
         _defaultState->_blendSrc = _blendSrc;
         _defaultState->_blendDst = _blendDst;
     }
@@ -561,12 +561,12 @@ void RenderState::StateBlock::bindNoRestore()
     }
     if ((_bits & RS_CULL_FACE_SIDE) && (_cullFaceSide != _defaultState->_cullFaceSide))
     {
-        GPRHI_ASSERT( GPRHI_CullFace((GLenum)_cullFaceSide) );
+        GPRHI_ASSERT( GPRHI_CullFace((gp_enum)_cullFaceSide) );
         _defaultState->_cullFaceSide = _cullFaceSide;
     }
     if ((_bits & RS_FRONT_FACE) && (_frontFace != _defaultState->_frontFace))
     {
-        GPRHI_ASSERT( GPRHI_FrontFace((GLenum)_frontFace) );
+        GPRHI_ASSERT( GPRHI_FrontFace((gp_enum)_frontFace) );
         _defaultState->_frontFace = _frontFace;
     }
     if ((_bits & RS_DEPTH_TEST) && (_depthTestEnabled != _defaultState->_depthTestEnabled))
@@ -584,7 +584,7 @@ void RenderState::StateBlock::bindNoRestore()
     }
     if ((_bits & RS_DEPTH_FUNC) && (_depthFunction != _defaultState->_depthFunction))
     {
-        GPRHI_ASSERT( GPRHI_DepthFunc((GLenum)_depthFunction) );
+        GPRHI_ASSERT( GPRHI_DepthFunc((gp_enum)_depthFunction) );
         _defaultState->_depthFunction = _depthFunction;
     }
 	if ((_bits & RS_STENCIL_TEST) && (_stencilTestEnabled != _defaultState->_stencilTestEnabled))
@@ -604,7 +604,7 @@ void RenderState::StateBlock::bindNoRestore()
 										_stencilFunctionRef != _defaultState->_stencilFunctionRef ||
 										_stencilFunctionMask != _defaultState->_stencilFunctionMask))
     {
-		GPRHI_ASSERT( GPRHI_StencilFunc((GLenum)_stencilFunction, _stencilFunctionRef, _stencilFunctionMask) );
+		GPRHI_ASSERT( GPRHI_StencilFunc((gp_enum)_stencilFunction, _stencilFunctionRef, _stencilFunctionMask) );
         _defaultState->_stencilFunction = _stencilFunction;
 		_defaultState->_stencilFunctionRef = _stencilFunctionRef;
 		_defaultState->_stencilFunctionMask = _stencilFunctionMask;
@@ -613,7 +613,7 @@ void RenderState::StateBlock::bindNoRestore()
 									_stencilOpDpfail != _defaultState->_stencilOpDpfail ||
 									_stencilOpDppass != _defaultState->_stencilOpDppass))
     {
-		GPRHI_ASSERT( GPRHI_StencilOp((GLenum)_stencilOpSfail, (GLenum)_stencilOpDpfail, (GLenum)_stencilOpDppass) );
+		GPRHI_ASSERT( GPRHI_StencilOp((gp_enum)_stencilOpSfail, (gp_enum)_stencilOpDpfail, (gp_enum)_stencilOpDppass) );
         _defaultState->_stencilOpSfail = _stencilOpSfail;
 		_defaultState->_stencilOpDpfail = _stencilOpDpfail;
 		_defaultState->_stencilOpDppass = _stencilOpDppass;
@@ -654,13 +654,13 @@ void RenderState::StateBlock::restore(long stateOverrideBits)
     }
     if (!(stateOverrideBits & RS_CULL_FACE_SIDE) && (_defaultState->_bits & RS_CULL_FACE_SIDE))
     {
-        GPRHI_ASSERT( GPRHI_CullFace((GLenum)GP_RHI_CULL_FACE_BACK) );
+        GPRHI_ASSERT( GPRHI_CullFace((gp_enum)GP_RHI_CULL_FACE_BACK) );
         _defaultState->_bits &= ~RS_CULL_FACE_SIDE;
         _defaultState->_cullFaceSide = RenderState::CULL_FACE_SIDE_BACK;
     }
     if (!(stateOverrideBits & RS_FRONT_FACE) && (_defaultState->_bits & RS_FRONT_FACE))
     {
-        GPRHI_ASSERT( GPRHI_FrontFace((GLenum)GP_RHI_FRONT_FACE_CCW) );
+        GPRHI_ASSERT( GPRHI_FrontFace((gp_enum)GP_RHI_FRONT_FACE_CCW) );
         _defaultState->_bits &= ~RS_FRONT_FACE;
         _defaultState->_frontFace = RenderState::FRONT_FACE_CCW;
     }
@@ -678,7 +678,7 @@ void RenderState::StateBlock::restore(long stateOverrideBits)
     }
     if (!(stateOverrideBits & RS_DEPTH_FUNC) && (_defaultState->_bits & RS_DEPTH_FUNC))
     {
-        GPRHI_ASSERT( GPRHI_DepthFunc((GLenum)GP_RHI_COMPARE_FUNC_LESS) );
+        GPRHI_ASSERT( GPRHI_DepthFunc((gp_enum)GP_RHI_COMPARE_FUNC_LESS) );
         _defaultState->_bits &= ~RS_DEPTH_FUNC;
         _defaultState->_depthFunction = RenderState::DEPTH_LESS;
     }
@@ -696,7 +696,7 @@ void RenderState::StateBlock::restore(long stateOverrideBits)
     }
 	if (!(stateOverrideBits & RS_STENCIL_FUNC) && (_defaultState->_bits & RS_STENCIL_FUNC))
     {
-		GPRHI_ASSERT( GPRHI_StencilFunc((GLenum)RenderState::STENCIL_ALWAYS, 0, RS_ALL_ONES) );
+		GPRHI_ASSERT( GPRHI_StencilFunc((gp_enum)RenderState::STENCIL_ALWAYS, 0, RS_ALL_ONES) );
         _defaultState->_bits &= ~RS_STENCIL_FUNC;
         _defaultState->_stencilFunction = RenderState::STENCIL_ALWAYS;
 		_defaultState->_stencilFunctionRef = 0;
@@ -704,7 +704,7 @@ void RenderState::StateBlock::restore(long stateOverrideBits)
     }
 	if (!(stateOverrideBits & RS_STENCIL_OP) && (_defaultState->_bits & RS_STENCIL_OP))
     {
-		GPRHI_ASSERT( GPRHI_StencilOp((GLenum)RenderState::STENCIL_OP_KEEP, (GLenum)RenderState::STENCIL_OP_KEEP, (GLenum)RenderState::STENCIL_OP_KEEP) );
+		GPRHI_ASSERT( GPRHI_StencilOp((gp_enum)RenderState::STENCIL_OP_KEEP, (gp_enum)RenderState::STENCIL_OP_KEEP, (gp_enum)RenderState::STENCIL_OP_KEEP) );
         _defaultState->_bits &= ~RS_STENCIL_OP;
         _defaultState->_stencilOpSfail = RenderState::STENCIL_OP_KEEP;
 		_defaultState->_stencilOpDpfail = RenderState::STENCIL_OP_KEEP;

@@ -246,7 +246,7 @@ Texture* Texture::create(Format format, unsigned int width, unsigned int height,
     GPRHI_ASSERT( GPRHI_GenTextures(1, &textureId) );
     GPRHI_ASSERT( GPRHI_BindTexture(target, textureId) );
     GPRHI_ASSERT( GPRHI_PixelStorei(GP_RHI_PIXEL_STORE_UNPACK_ALIGHMENT, 1) );
-#ifndef OPENGL_ES
+#if !defined( OPENGL_ES ) && !defined( USE_VULKAN )
     // glGenerateMipmap is new in OpenGL 3.0. For OpenGL 2.0 we must fallback to use GPRHI_TexParameteri
     // with GL_GENERATE_MIPMAP prior to actual texture creation (GPRHI_TexImage2D)
     if ( generateMipmaps && !std::addressof(glGenerateMipmap) )
@@ -324,7 +324,7 @@ Texture* Texture::create(TextureHandle handle, int width, int height, Format for
 
     Texture* texture = new Texture();
 	// TODO: Need to refactor here. 
-    if (glIsTexture(handle))
+    if (GPRHI_IsTexture(handle))
     {
         // There is no real way to query for texture type, but an error will be returned if a cube texture is bound to a 2D texture... so check for that
         GPRHI_BindTexture(GP_RHI_TEXTURE_TARGET_TEXTURE_CUPE_MAP, handle);
@@ -1190,8 +1190,12 @@ void Texture::generateMipmaps()
         gp_enum target = (gp_enum)_type;
         GPRHI_ASSERT( GPRHI_BindTexture(target, _handle) );
         GPRHI_ASSERT( GPRHI_Hint(GP_RHI_HINT_GENERATE_MIPMAP_HINT, GP_RHI_HINT_MODE_NICEST) );
+#ifdef USE_GLES
         if( std::addressof(glGenerateMipmap) )
             GPRHI_ASSERT( GPRHI_GenerateMipmap(target) );
+#else
+#pragma message ("TODO ------------------------------------- not implemented")
+#endif
 
         _mipmapped = true;
 

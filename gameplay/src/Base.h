@@ -34,7 +34,7 @@
 #include "Logger.h"
 
 //If use vulkan api, enable this macro below
-//#define  USE_VULKAN
+#define  USE_VULKAN
 
 #ifndef USE_VULKAN
 #define USE_GLES
@@ -235,9 +235,6 @@ using std::va_list;
 	#define GLEW_STATIC
 	#include <GL/glew.h>
 	#define GP_USE_VAO
-#else
-	// TODO: include vulkan header here
-	#include "vulkan/VkBase.h"	
 #endif
 #elif __linux__
         #define GLEW_STATIC

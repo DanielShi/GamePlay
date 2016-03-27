@@ -19,11 +19,11 @@
     <Filter Include="res\ui">
       <UniqueIdentifier>{eb377577-593a-469f-9361-b6950a99e431}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\vulkan">
-      <UniqueIdentifier>{70aa05c2-4423-4371-bca5-bacad3e5cbea}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\RHI">
       <UniqueIdentifier>{15bb7e95-c353-464e-b90d-b9f773434334}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\RHI\vulkan">
+      <UniqueIdentifier>{9d96c8e4-9dda-48c7-b430-9b994a2a3df4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -783,6 +783,21 @@
     <ClCompile Include="src\RHI\RHIRenderState.cpp">
       <Filter>src\RHI</Filter>
     </ClCompile>
+    <ClCompile Include="src\RHI\vulkan\RHIBufferVK.cpp">
+      <Filter>src\RHI\vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\vulkan\RHIOpVK.cpp">
+      <Filter>src\RHI\vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\vulkan\RHIRenderStateVK.cpp">
+      <Filter>src\RHI\vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\vulkan\RHIShaderVK.cpp">
+      <Filter>src\RHI\vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\vulkan\RHITextureVK.cpp">
+      <Filter>src\RHI\vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Plane.h">
@@ -1531,9 +1546,6 @@
     </ClInclude>
     <ClInclude Include="src\lua\lua_VerticalLayout.h">
       <Filter>src\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="src\vulkan\VkBase.h">
-      <Filter>src\vulkan</Filter>
     </ClInclude>
     <ClInclude Include="src\RHI\RHIBase.h">
       <Filter>src\RHI</Filter>

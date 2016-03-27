@@ -50,6 +50,7 @@ DepthStencilTarget* DepthStencilTarget::create(const char* id, Format format, un
     __gl_error_code = GPRHI_GetError();
     if ( __gl_error_code != GP_NO_ERROR)
     {
+#ifdef USE_GLES
         const char* extString = (const char*)glGetString(GL_EXTENSIONS);
 
         if (strstr(extString, "GL_OES_packed_depth_stencil") != 0)
@@ -74,6 +75,7 @@ DepthStencilTarget* DepthStencilTarget::create(const char* id, Format format, un
                 GPRHI_ASSERT( GPRHI_RenderbufferStorage(GP_RHI_BUFFER_RENDER_BUFFER, GP_RHI_FORMAT_S8, width, height) );
             }
         }
+#endif 
     }
     else
     {
